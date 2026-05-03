@@ -4,10 +4,12 @@ import { initTheme, toggleTheme } from './theme';
 import { renderWatermark, loadImageFile } from './watermark';
 import { processBatch } from './batch';
 import type { RenderOptions, WatermarkPosition } from './types';
+import { initRouter } from './router';
 
 // ── Bootstrap ────────────────────────────────────────────────────────────────
 
 initTheme();
+initRouter();
 
 document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
 
