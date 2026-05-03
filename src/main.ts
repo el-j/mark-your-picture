@@ -13,6 +13,50 @@ initRouter();
 
 document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
 
+const hamburgerBtn = document.querySelector('.hamburger-btn');
+const mobileNav = document.querySelector('.main-nav-mobile');
+const overlay = document.querySelector('.menu-overlay');
+const navLinks = document.querySelectorAll('.nav-link');
+
+// Function to toggle the menu open/closed state
+const toggleMenu = () => {
+  const isMenuOpen = mobileNav?.classList.contains('is-open');
+
+  if (isMenuOpen) {
+    // Close Menu
+    mobileNav?.classList.remove('is-open');
+    hamburgerBtn?.classList.remove('is-active');
+    overlay?.classList.remove('is-visible');
+    hamburgerBtn?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = ''; // Restore scrolling
+  } else {
+    // Open Menu
+    mobileNav?.classList.add('is-open');
+    hamburgerBtn?.classList.add('is-active');
+    overlay?.classList.add('is-visible');
+    hamburgerBtn?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+};
+
+// Event listener for the hamburger button
+hamburgerBtn?.addEventListener('click', toggleMenu);
+
+// Event listener to close the menu when clicking on the dark overlay
+overlay?.addEventListener('click', toggleMenu);
+
+// Event listener to close the menu when a link is clicked
+navLinks.forEach((link) => {
+  link.addEventListener('click', function () {
+    // Optional: Handle active state switching visually for demonstration
+    navLinks.forEach((l) => l.classList.remove('active'));
+    link.classList.add('active');
+
+    if (mobileNav?.classList.contains('is-open')) {
+      toggleMenu();
+    }
+  });
+});
 // ── State ─────────────────────────────────────────────────────────────────────
 
 let sourceImg: HTMLImageElement | null = null;
@@ -23,21 +67,25 @@ let activeMode: 'single' | 'batch' = 'single';
 
 // ── Element refs ──────────────────────────────────────────────────────────────
 
-const canvas       = document.getElementById('canvas') as HTMLCanvasElement;
-const emptyState   = document.getElementById('empty-state') as HTMLElement;
-const dropZone     = document.getElementById('drop-zone') as HTMLElement;
-const fileInput    = document.getElementById('file-input') as HTMLInputElement;
-const batchInput   = document.getElementById('batch-input') as HTMLInputElement;
-const wmImgDrop    = document.getElementById('wm-img-drop') as HTMLElement;
-const wmImgInput   = document.getElementById('wm-img-input') as HTMLInputElement;
-const wmImgPreview = document.getElementById('wm-img-preview') as HTMLImageElement;
-const batchList    = document.getElementById('batch-list') as HTMLElement;
-const progressBar  = document.getElementById('progress-bar') as HTMLElement;
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+const emptyState = document.getElementById('empty-state') as HTMLElement;
+const dropZone = document.getElementById('drop-zone') as HTMLElement;
+const fileInput = document.getElementById('file-input') as HTMLInputElement;
+const batchInput = document.getElementById('batch-input') as HTMLInputElement;
+const wmImgDrop = document.getElementById('wm-img-drop') as HTMLElement;
+const wmImgInput = document.getElementById('wm-img-input') as HTMLInputElement;
+const wmImgPreview = document.getElementById(
+  'wm-img-preview',
+) as HTMLImageElement;
+const batchList = document.getElementById('batch-list') as HTMLElement;
+const progressBar = document.getElementById('progress-bar') as HTMLElement;
 const progressWrap = document.getElementById('progress-wrap') as HTMLElement;
-const btnApply     = document.getElementById('btn-apply') as HTMLButtonElement;
-const btnDownload  = document.getElementById('btn-download') as HTMLButtonElement;
-const btnBatch     = document.getElementById('btn-batch') as HTMLButtonElement;
-const btnReset     = document.getElementById('btn-reset') as HTMLButtonElement;
+const btnApply = document.getElementById('btn-apply') as HTMLButtonElement;
+const btnDownload = document.getElementById(
+  'btn-download',
+) as HTMLButtonElement;
+const btnBatch = document.getElementById('btn-batch') as HTMLButtonElement;
+const btnReset = document.getElementById('btn-reset') as HTMLButtonElement;
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 
@@ -60,9 +108,9 @@ function num(id: string): number {
 
 function getRenderOpts(): RenderOptions {
   const position = val('wm-position') as WatermarkPosition;
-  const opacity  = num('wm-opacity');
+  const opacity = num('wm-opacity');
   const rotation = num('wm-rotate');
-  const margin   = num('wm-margin');
+  const margin = num('wm-margin');
 
   if (activeTab === 'image') {
     return {
@@ -71,20 +119,26 @@ function getRenderOpts(): RenderOptions {
         image: wmImg ?? new Image(),
         scale: num('wm-img-scale'),
       },
-      position, opacity, rotation, margin,
+      position,
+      opacity,
+      rotation,
+      margin,
     };
   }
 
   return {
     watermark: {
       type: 'text',
-      text:  val('wm-text'),
-      font:  val('wm-font'),
-      size:  num('wm-size'),
+      text: val('wm-text'),
+      font: val('wm-font'),
+      size: num('wm-size'),
       style: val('wm-style'),
       color: val('wm-color-hex') || '#ffffff',
     },
-    position, opacity, rotation, margin,
+    position,
+    opacity,
+    rotation,
+    margin,
   };
 }
 
@@ -96,7 +150,10 @@ fileInput.addEventListener('change', (e) => {
   if (file) loadSource(file);
 });
 
-dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('over');
+});
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
 dropZone.addEventListener('drop', (e) => {
   e.preventDefault();
@@ -106,14 +163,16 @@ dropZone.addEventListener('drop', (e) => {
 });
 
 function loadSource(file: File): void {
-  loadImageFile(file).then((img) => {
-    sourceImg = img;
-    emptyState.style.display = 'none';
-    canvas.style.display = 'block';
-    btnApply.disabled = false;
-    renderWatermark(canvas, img, getRenderOpts());
-    toast('Image loaded ✓');
-  }).catch(() => toast('Failed to load image'));
+  loadImageFile(file)
+    .then((img) => {
+      sourceImg = img;
+      emptyState.style.display = 'none';
+      canvas.style.display = 'block';
+      btnApply.disabled = false;
+      renderWatermark(canvas, img, getRenderOpts());
+      toast('Image loaded ✓');
+    })
+    .catch(() => toast('Failed to load image'));
 }
 
 // ── Image upload (batch) ─────────────────────────────────────────────────────
@@ -126,12 +185,19 @@ batchInput.addEventListener('change', (e) => {
   if (files.length) loadBatchFiles(files);
 });
 
-batchDrop.addEventListener('dragover', (e) => { e.preventDefault(); batchDrop.classList.add('over'); });
-batchDrop.addEventListener('dragleave', () => batchDrop.classList.remove('over'));
+batchDrop.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  batchDrop.classList.add('over');
+});
+batchDrop.addEventListener('dragleave', () =>
+  batchDrop.classList.remove('over'),
+);
 batchDrop.addEventListener('drop', (e) => {
   e.preventDefault();
   batchDrop.classList.remove('over');
-  const files = Array.from(e.dataTransfer?.files ?? []).filter((f) => f.type.startsWith('image/'));
+  const files = Array.from(e.dataTransfer?.files ?? []).filter((f) =>
+    f.type.startsWith('image/'),
+  );
   if (files.length) loadBatchFiles(files);
 });
 
@@ -160,21 +226,27 @@ wmImgInput.addEventListener('change', (e) => {
 });
 
 function loadWmImage(file: File): void {
-  loadImageFile(file).then((img) => {
-    wmImg = img;
-    wmImgPreview.src = img.src;
-    wmImgPreview.style.display = 'block';
-    toast('Watermark image loaded ✓');
-    if (sourceImg) applyWatermark();
-  }).catch(() => toast('Failed to load watermark image'));
+  loadImageFile(file)
+    .then((img) => {
+      wmImg = img;
+      wmImgPreview.src = img.src;
+      wmImgPreview.style.display = 'block';
+      toast('Watermark image loaded ✓');
+      if (sourceImg) applyWatermark();
+    })
+    .catch(() => toast('Failed to load watermark image'));
 }
 
 // ── Tabs (text / image watermark) ────────────────────────────────────────────
 
 document.querySelectorAll<HTMLElement>('.tab-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+    document
+      .querySelectorAll('.tab-btn')
+      .forEach((b) => b.classList.remove('active'));
+    document
+      .querySelectorAll('.tab-panel')
+      .forEach((p) => p.classList.remove('active'));
     btn.classList.add('active');
     activeTab = btn.dataset['tab'] as 'text' | 'image';
     document.getElementById(`panel-${activeTab}`)?.classList.add('active');
@@ -186,11 +258,17 @@ document.querySelectorAll<HTMLElement>('.tab-btn').forEach((btn) => {
 
 document.querySelectorAll<HTMLElement>('.mode-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.mode-btn').forEach((b) => b.classList.remove('active'));
+    document
+      .querySelectorAll('.mode-btn')
+      .forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     activeMode = btn.dataset['mode'] as 'single' | 'batch';
-    document.getElementById('single-panel')?.classList.toggle('active', activeMode === 'single');
-    document.getElementById('batch-panel')?.classList.toggle('active', activeMode === 'batch');
+    document
+      .getElementById('single-panel')
+      ?.classList.toggle('active', activeMode === 'single');
+    document
+      .getElementById('batch-panel')
+      ?.classList.toggle('active', activeMode === 'batch');
   });
 });
 
@@ -199,17 +277,19 @@ document.querySelectorAll<HTMLElement>('.mode-btn').forEach((btn) => {
 function syncRange(id: string, displayId: string, suffix: string): void {
   const el = document.getElementById(id) as HTMLInputElement;
   const out = document.getElementById(displayId) as HTMLElement;
-  el.addEventListener('input', () => { out.textContent = el.value + suffix; });
+  el.addEventListener('input', () => {
+    out.textContent = el.value + suffix;
+  });
 }
 
-syncRange('wm-opacity',   'wm-opacity-val',   '%');
-syncRange('wm-rotate',    'wm-rotate-val',    '°');
+syncRange('wm-opacity', 'wm-opacity-val', '%');
+syncRange('wm-rotate', 'wm-rotate-val', '°');
 syncRange('wm-img-scale', 'wm-img-scale-val', '%');
 
 // ── Color sync ────────────────────────────────────────────────────────────────
 
 const colorPicker = document.getElementById('wm-color') as HTMLInputElement;
-const colorHex    = document.getElementById('wm-color-hex') as HTMLInputElement;
+const colorHex = document.getElementById('wm-color-hex') as HTMLInputElement;
 
 colorPicker.addEventListener('input', () => {
   colorHex.value = colorPicker.value;
@@ -225,15 +305,24 @@ colorHex.addEventListener('input', () => {
 // ── Live preview ──────────────────────────────────────────────────────────────
 
 const liveInputIds = [
-  'wm-text', 'wm-font', 'wm-size', 'wm-style',
-  'wm-opacity', 'wm-rotate', 'wm-position', 'wm-margin', 'wm-img-scale',
+  'wm-text',
+  'wm-font',
+  'wm-size',
+  'wm-style',
+  'wm-opacity',
+  'wm-rotate',
+  'wm-position',
+  'wm-margin',
+  'wm-img-scale',
 ];
 
 liveInputIds.forEach((id) => {
   const el = document.getElementById(id);
   if (!el) return;
   const event = (el as HTMLInputElement).type === 'range' ? 'input' : 'change';
-  el.addEventListener(event, () => { if (sourceImg) applyWatermark(); });
+  el.addEventListener(event, () => {
+    if (sourceImg) applyWatermark();
+  });
 });
 
 // ── Apply / Download / Reset ──────────────────────────────────────────────────
@@ -259,7 +348,7 @@ btnReset.addEventListener('click', () => {
   if (!sourceImg) return;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  canvas.width  = sourceImg.naturalWidth;
+  canvas.width = sourceImg.naturalWidth;
   canvas.height = sourceImg.naturalHeight;
   ctx.drawImage(sourceImg, 0, 0);
   btnDownload.disabled = true;
@@ -282,15 +371,24 @@ btnBatch.addEventListener('click', async () => {
   await processBatch(batchFiles, getRenderOpts(), {
     onFileStart: (i) => {
       const el = document.getElementById(`bs-${i}`);
-      if (el) { el.textContent = 'Processing…'; el.className = 'batch-status processing'; }
+      if (el) {
+        el.textContent = 'Processing…';
+        el.className = 'batch-status processing';
+      }
     },
     onFileComplete: (i) => {
       const el = document.getElementById(`bs-${i}`);
-      if (el) { el.textContent = 'Done ✓'; el.className = 'batch-status done'; }
+      if (el) {
+        el.textContent = 'Done ✓';
+        el.className = 'batch-status done';
+      }
     },
     onFileError: (i) => {
       const el = document.getElementById(`bs-${i}`);
-      if (el) { el.textContent = 'Error ✗'; el.className = 'batch-status error'; }
+      if (el) {
+        el.textContent = 'Error ✗';
+        el.className = 'batch-status error';
+      }
     },
     onProgress: (pct) => {
       progressBar.style.width = `${pct}%`;
@@ -298,7 +396,9 @@ btnBatch.addEventListener('click', async () => {
     onDone: () => {
       btnBatch.disabled = false;
       toast('ZIP downloaded ✓', 3500);
-      setTimeout(() => { progressWrap.style.display = 'none'; }, 3000);
+      setTimeout(() => {
+        progressWrap.style.display = 'none';
+      }, 3000);
     },
   });
 });
@@ -307,15 +407,18 @@ btnBatch.addEventListener('click', async () => {
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
-  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
   prompt(): Promise<void>;
 }
 
 let deferredInstallPrompt: BeforeInstallPromptEvent | null = null;
 
 const installBanner = document.getElementById('install-banner') as HTMLElement;
-const btnInstall    = document.getElementById('btn-install') as HTMLButtonElement;
-const btnDismiss    = document.getElementById('btn-dismiss') as HTMLButtonElement;
+const btnInstall = document.getElementById('btn-install') as HTMLButtonElement;
+const btnDismiss = document.getElementById('btn-dismiss') as HTMLButtonElement;
 
 // Capture the browser's install prompt event
 window.addEventListener('beforeinstallprompt', (e: Event) => {
