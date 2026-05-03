@@ -1,0 +1,29 @@
+{
+  "name": "mark-your-picture",
+  "version": "1.0.0",
+  "description": "Simple client based tool to add a watermark into a picture. And download it again",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "generate-icons": "node scripts/generate-icons.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "overrides": {
+    "@rollup/plugin-terser": "^1.0.0",
+    "serialize-javascript": "^7.0.5"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^1.0.0",
+    "@types/jszip": "^3.4.0",
+    "jszip": "^3.10.1",
+    "serialize-javascript": "^7.0.5",
+    "sharp": "^0.34.5",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10",
+    "vite-plugin-pwa": "^0.19.8"
+  }
+}
