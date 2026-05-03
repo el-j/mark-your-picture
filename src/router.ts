@@ -35,7 +35,5 @@ function navigate(): void {
 
 export function initRouter(): void {
   window.addEventListener('hashchange', navigate)
-  window.addEventListener('load', navigate)
-  // Run immediately so the initial render is correct before 'load' fires
   navigate()
 }
