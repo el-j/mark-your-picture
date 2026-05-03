@@ -507,6 +507,64 @@
       flex-shrink: 0;
     }
     .btn-dismiss:hover { color: var(--text); }
+
+    /* ── Navigation ────────────────────────────────────────────────────────── */
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+      white-space: nowrap;
+    }
+    .nav-link:hover { border-color: var(--border); color: var(--text); }
+    .nav-link.nav-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Page containers ───────────────────────────────────────────────────── */
+    .page { display: none; }
+    .page.page-active { display: flex; flex-direction: column; flex: 1; }
+
+    /* ── Info pages (About / Imprint) ──────────────────────────────────────── */
+    .info-page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      width: 100%;
+    }
+    .info-page h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .info-page h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .info-page p {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
@@ -523,9 +581,24 @@
     <h1>Mark Your Picture</h1>
     <p>100% client-side · no upload</p>
   </div>
+  <nav class="main-nav" aria-label="Main navigation">
+    <a href="#/" class="nav-link nav-active" data-route="/">
+      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span>Tool</span>
+    </a>
+    <a href="#/about" class="nav-link" data-route="/about">
+      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>About</span>
+    </a>
+    <a href="#/imprint" class="nav-link" data-route="/imprint">
+      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Imprint</span>
+    </a>
+  </nav>
   <button id="theme-toggle" aria-label="Switch theme"></button>
 </header>
 
+<div id="page-home" class="page page-active">
 <div class="app-layout">
 
   <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
@@ -707,7 +780,71 @@
     </div>
     <canvas id="canvas"></canvas>
   </section>
-</div>
+</div><!-- /.app-layout -->
+</div><!-- /#page-home -->
+
+<div id="page-about" class="page">
+  <main class="info-page">
+    <h2>About Mark Your Picture</h2>
+
+    <div class="card">
+      <h3>Why this tool?</h3>
+      <p>Photographers, creators, and designers need a quick, trustworthy way to protect their work. Most watermark services require uploading your images to a third-party server — we think that's wrong. Your creative work belongs to you, and it should never have to leave your device just to add a simple watermark.</p>
+    </div>
+
+    <div class="card">
+      <h3>🔒 No Upload Policy</h3>
+      <p>Your images never leave your device. Everything happens entirely in your browser using the HTML5 Canvas API. There is no server, no cloud storage, and no intermediate transfer of your files. What you load stays on your machine — period.</p>
+    </div>
+
+    <div class="card">
+      <h3>⚡ 100% Client-Side</h3>
+      <p>There is no server processing your images. No data is transmitted, no account required, no tracking of your files. The app works fully offline once installed as a PWA, making it fast, private, and available even without an internet connection.</p>
+    </div>
+
+    <div class="card">
+      <h3>✏️ What you can do</h3>
+      <p>Add custom text or logo watermarks with full control over position, opacity, rotation, font, and size. Process a single image or an entire batch at once — the batch mode packages all watermarked results into a ZIP file ready for download.</p>
+    </div>
+
+    <div class="card">
+      <h3>Open Source</h3>
+      <p>Mark Your Picture is free and open-source. You can inspect the code, contribute improvements, or self-host it on your own infrastructure. Transparency is a core value — you should always be able to verify that no data is being sent anywhere.</p>
+      <a href="https://github.com/el-j/mark-your-picture" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top:0.75rem;text-decoration:none;display:inline-flex;width:auto">
+        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </main>
+</div><!-- /#page-about -->
+
+<div id="page-imprint" class="page">
+  <main class="info-page">
+    <h2>Imprint</h2>
+
+    <div class="card">
+      <p class="section-label">Responsible for content</p>
+      <p>This website is a non-commercial, open-source project. It is provided free of charge without any warranty of fitness for a particular purpose. The project is maintained by the GitHub user <strong style="color:var(--text)">el-j</strong>.</p>
+      <p style="margin-top:0.6rem">Contact &amp; provider information: See the GitHub profile linked below. For legal inquiries, please open an issue or reach out via the repository.</p>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Liability Notice</p>
+      <p>The content on this site is provided for informational purposes only. Despite careful review, we assume no liability for the accuracy, completeness, or timeliness of the information. Links to external websites are outside our control; we accept no responsibility for their content.</p>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Source Code</p>
+      <p style="margin-bottom:0.5rem">The full source code is publicly available under an open-source licence:</p>
+      <a href="https://github.com/el-j/mark-your-picture" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-size:0.88rem;word-break:break-all">github.com/el-j/mark-your-picture</a>
+    </div>
+
+    <div class="card">
+      <p class="section-label">Privacy</p>
+      <p>No personal data is collected by this application. All image processing is performed locally in your browser using the HTML5 Canvas API. No cookies are set, no analytics are run, and no files are transmitted to any server. The hosting provider (GitHub Pages / Cloudflare Pages or similar) may collect standard web server logs (IP address, request time, user-agent) as part of normal infrastructure operation — please refer to their respective privacy policies for details.</p>
+    </div>
+  </main>
+</div><!-- /#page-imprint -->
 
 <div id="toast" role="status" aria-live="polite"></div>
 
