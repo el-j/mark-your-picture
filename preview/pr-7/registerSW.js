@@ -1,1 +1,0 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/mark-your-picture/preview/pr-7/sw.js', { scope: '/mark-your-picture/preview/pr-7/' })})}
