@@ -131,6 +131,7 @@ export const en = {
       body: 'Mark Your Picture is free and open-source. You can inspect the code, contribute improvements, or self-host it on your own infrastructure.',
       github: 'View on GitHub',
     },
+    version: 'Version',
   },
   imprint: {
     title: 'Imprint',
