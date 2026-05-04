@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useToast } from '../../hooks/useToast';
 import { useT } from '../../i18n/index';
 
+const BANNER_DELAY_MS = 3000;
+
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
@@ -19,7 +21,7 @@ export function InstallBanner() {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       if (sessionStorage.getItem('pwa-dismissed') !== '1') {
-        setTimeout(() => setVisible(true), 3000);
+        setTimeout(() => setVisible(true), BANNER_DELAY_MS);
       }
     };
     window.addEventListener('beforeinstallprompt', handler);

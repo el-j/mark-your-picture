@@ -42,6 +42,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const t: TFunc = useCallback((key: string, vars?: Record<string, string | number>) => {
     const raw = getByPath(locales[lang], key);
     if (!vars) return raw;
+    // Replaces `{variableName}` placeholders in translation strings, e.g. t('batch.toastReady_many', { count: 5 })
     return raw.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''));
   }, [lang]);
 
