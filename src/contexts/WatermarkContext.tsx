@@ -56,7 +56,7 @@ const initialState: WatermarkState = {
   color: '#ffffff',
   wmImg: null,
   wmImgScale: 25,
-  position: 'bottom-right',
+  position: 'free',
   opacity: 60,
   rotation: -30,
   margin: 20,

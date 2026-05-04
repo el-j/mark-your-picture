@@ -60,9 +60,12 @@ export function ActionButtons() {
     if (!result) return;
     const url = URL.createObjectURL(result.blob);
     const a = document.createElement('a');
+    a.style.display = 'none';
     a.href = url;
     a.download = result.filename;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
     toast('Download started ✓');
   }, [getBlob, toast]);

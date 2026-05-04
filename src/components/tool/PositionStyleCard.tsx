@@ -2,13 +2,13 @@ import { useWatermark } from '../../contexts/WatermarkContext';
 import type { WatermarkPosition } from '../../lib/types';
 
 const positions: { value: WatermarkPosition; label: string }[] = [
+  { value: 'free', label: 'Free (drag on image)' },
   { value: 'bottom-right', label: 'Bottom Right' },
   { value: 'bottom-left', label: 'Bottom Left' },
   { value: 'top-right', label: 'Top Right' },
   { value: 'top-left', label: 'Top Left' },
   { value: 'center', label: 'Center' },
   { value: 'tile', label: 'Tile (repeat)' },
-  { value: 'free', label: 'Free (drag on image)' },
 ];
 
 export function PositionStyleCard() {
@@ -16,7 +16,7 @@ export function PositionStyleCard() {
   const isFree = state.position === 'free';
 
   return (
-    <div className="bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-4">
+    <>
       <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">Position &amp; Style</p>
 
       <label htmlFor="wm-position" className="!mt-0">Position</label>
@@ -55,6 +55,6 @@ export function PositionStyleCard() {
             onChange={(e) => dispatch({ type: 'SET_MARGIN', value: Number(e.target.value) })} />
         </div>
       )}
-    </div>
+    </>
   );
 }
