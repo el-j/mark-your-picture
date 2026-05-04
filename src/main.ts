@@ -73,12 +73,12 @@ const progressBar   = document.getElementById('progress-bar') as HTMLElement;
 const progressWrap  = document.getElementById('progress-wrap') as HTMLElement;
 const btnApply      = document.getElementById('btn-apply') as HTMLButtonElement;
 const btnDownload   = document.getElementById('btn-download') as HTMLButtonElement;
-const btnShare      = document.getElementById('btn-share') as HTMLButtonElement | null;
 const btnBatch      = document.getElementById('btn-batch') as HTMLButtonElement;
 const btnReset      = document.getElementById('btn-reset') as HTMLButtonElement;
 const positionSel   = document.getElementById('wm-position') as HTMLSelectElement;
 const marginRow     = document.getElementById('margin-row') as HTMLElement;
 const freeHint      = document.getElementById('free-hint') as HTMLElement | null;
+const downloadLabel = document.getElementById('download-label') as HTMLElement | null;
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 
@@ -122,8 +122,7 @@ function outputFilename(originalName: string, ext: string): string {
 function updateDownloadLabel(): void {
   const mime = resolveOutputMime(sourceFile?.type);
   const ext  = mimeToExt(mime).toUpperCase();
-  const dlLabel = document.getElementById('download-label');
-  if (dlLabel) dlLabel.textContent = `Download ${ext}`;
+  if (downloadLabel) downloadLabel.textContent = `Download ${ext}`;
 }
 
 function getRenderOpts(): RenderOptions {
@@ -231,7 +230,18 @@ function loadBatchFiles(files: File[]): void {
   files.forEach((file, i) => {
     const row = document.createElement('div');
     row.className = 'batch-item';
-    row.innerHTML = `<span class="batch-name">${file.name}</span><span class="batch-status pending" id="bs-${i}">Waiting</span>`;
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'batch-name';
+    nameSpan.textContent = file.name;
+
+    const statusSpan = document.createElement('span');
+    statusSpan.className = 'batch-status pending';
+    statusSpan.id = `bs-${i}`;
+    statusSpan.textContent = 'Waiting';
+
+    row.appendChild(nameSpan);
+    row.appendChild(statusSpan);
     batchList.appendChild(row);
   });
   btnBatch.disabled = false;
@@ -333,12 +343,11 @@ function applyWatermark(): void {
   if (!sourceImg) return;
   renderWatermark(canvas, sourceImg, getRenderOpts());
   btnDownload.disabled = false;
-  if (btnShare) btnShare.disabled = false;
 }
 
 // ── Download / Share ──────────────────────────────────────────────────────────
 
-async function downloadOrShare(forceDownload = false): Promise<void> {
+async function downloadOrShare(): Promise<void> {
   if (!sourceImg) return;
 
   const mime     = resolveOutputMime(sourceFile?.type);
@@ -357,7 +366,7 @@ async function downloadOrShare(forceDownload = false): Promise<void> {
   const file = new File([blob], filename, { type: mime });
 
   // Try Web Share API (available on mobile and some desktop browsers)
-  if (!forceDownload && navigator.canShare && navigator.canShare({ files: [file] })) {
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: 'Watermarked Image' });
       toast('Shared ✓');
@@ -378,7 +387,6 @@ async function downloadOrShare(forceDownload = false): Promise<void> {
 }
 
 btnDownload.addEventListener('click', () => downloadOrShare());
-btnShare?.addEventListener('click', () => downloadOrShare(false));
 
 btnReset.addEventListener('click', () => {
   if (!sourceImg) return;
@@ -388,7 +396,6 @@ btnReset.addEventListener('click', () => {
   canvas.height = sourceImg.naturalHeight;
   ctx.drawImage(sourceImg, 0, 0);
   btnDownload.disabled = true;
-  if (btnShare) btnShare.disabled = true;
   toast('Reset to original ✓');
 });
 
