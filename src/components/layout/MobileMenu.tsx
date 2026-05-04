@@ -67,7 +67,7 @@ export function MobileMenu() {
         id="mobile-menu"
         className={`fixed top-0! right-0! bottom-0! w-65 max-w-[80%] min-[900px]:hidden
                     bg-(--surface) border-l border-(--border)
-                    h-dvh p-4 pt-17.5
+                    h-svh p-4 pt-17.5
                     flex flex-col gap-1.5 z-99
                     transition-transform duration-250 ease-in-out
                     shadow-[-8px_0_32px_rgba(0,0,0,0.2)]
