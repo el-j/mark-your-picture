@@ -133,6 +133,7 @@ export const de: Translations = {
       body: 'Mark Your Picture ist kostenlos und Open-Source. Sie können den Code einsehen, Verbesserungen beitragen oder es auf Ihrer eigenen Infrastruktur selbst hosten.',
       github: 'Auf GitHub ansehen',
     },
+    version: 'Version',
   },
   imprint: {
     title: 'Impressum',

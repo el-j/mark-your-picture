@@ -66,6 +66,15 @@ export function AboutPage() {
           {t('about.openSource.github')}
         </a>
       </div>
+
+      <div className={`${cardCls} flex items-center justify-between`}>
+        <span className="text-[0.78rem] font-medium text-[var(--text-muted)]">
+          {t('about.version')}
+        </span>
+        <span className="text-[0.78rem] font-mono font-semibold text-[var(--accent)]">
+          v{__APP_VERSION__}
+        </span>
+      </div>
     </main>
   );
 }
