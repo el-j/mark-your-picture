@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, type ReactNode, type Dispatch } from 'react';
+import { createContext, useContext, useReducer, useCallback, useEffect, type ReactNode, type Dispatch } from 'react';
 import type { WatermarkPosition, RenderOptions } from '../lib/types';
 
 // ── State ───────────────────────────────────────────────────────────────────
@@ -93,12 +93,15 @@ export type WatermarkAction =
   | { type: 'SET_BATCH_PROGRESS'; value: number }
   | { type: 'SET_IS_PROCESSING'; value: boolean }
   | { type: 'SET_HAS_APPLIED'; value: boolean }
+  | { type: 'CLEAR_SOURCE' }
   | { type: 'RESET' };
 
 function reducer(state: WatermarkState, action: WatermarkAction): WatermarkState {
   switch (action.type) {
     case 'SET_SOURCE':
       return { ...state, sourceImg: action.img, sourceFile: action.file, freeX: 0.5, freeY: 0.5, hasApplied: false };
+    case 'CLEAR_SOURCE':
+      return { ...state, sourceImg: null, sourceFile: null, hasApplied: false };
     case 'SET_ACTIVE_TAB':
       return { ...state, activeTab: action.tab };
     case 'SET_TEXT':
@@ -160,10 +163,35 @@ interface WatermarkContextValue {
   getRenderOpts: () => RenderOptions;
 }
 
+const PERSIST_KEY = 'mark-your-picture-state-v1';
+
+function loadPersistedState(): Partial<WatermarkState> {
+  try {
+    const data = localStorage.getItem(PERSIST_KEY);
+    if (!data) return {};
+    return JSON.parse(data);
+  } catch (e) {
+    return {};
+  }
+}
+
 const WatermarkContext = createContext<WatermarkContextValue | null>(null);
 
 export function WatermarkProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, { ...initialState, ...loadPersistedState() });
+
+  useEffect(() => {
+    // Save serializable state settings to localStorage
+    const {
+      activeTab, text, font, size, style, color, wmImgScale,
+      position, opacity, rotation, margin, freeX, freeY, mode
+    } = state;
+    
+    localStorage.setItem(PERSIST_KEY, JSON.stringify({
+      activeTab, text, font, size, style, color, wmImgScale,
+      position, opacity, rotation, margin, freeX, freeY, mode
+    }));
+  }, [state]);
 
   const getRenderOpts = useCallback((): RenderOptions => {
     const base = {
