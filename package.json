@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "generate-icons": "node scripts/generate-icons.mjs"
   },
   "keywords": [],
@@ -21,17 +23,22 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^1.0.0",
     "@tailwindcss/vite": "^4.2.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/jszip": "^3.4.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^29.1.1",
     "jszip": "^3.10.1",
     "serialize-javascript": "^7.0.5",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3",
     "vite": "^8.0.10",
-    "vite-plugin-pwa": "^1.2.0"
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^4.1.5"
   },
   "dependencies": {
     "react": "^19.2.5",

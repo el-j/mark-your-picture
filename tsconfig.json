@@ -11,7 +11,8 @@
     "skipLibCheck": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": ["vitest/globals"]
   },
   "include": ["src"]
 }
