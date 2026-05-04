@@ -2,8 +2,10 @@ import { useT } from '../../i18n/index';
 
 export function ImprintPage() {
   const t = useT();
-  const cardCls = "bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-3";
-  const labelCls = "text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5";
+  const cardCls =
+    'bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-3';
+  const labelCls =
+    'text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5';
 
   return (
     <main className="max-w-[680px] mx-auto py-8 px-5 flex flex-col gap-4 w-full">
@@ -33,7 +35,12 @@ export function ImprintPage() {
         <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)] mb-2">
           {t('imprint.source.body')}
         </p>
-        <a href="https://github.com/el-j/mark-your-picture" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] text-[0.85rem] break-all">
+        <a
+          href="https://github.com/el-j/mark-your-picture"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[var(--accent)] text-[0.85rem] break-all"
+        >
           github.com/el-j/mark-your-picture
         </a>
       </div>

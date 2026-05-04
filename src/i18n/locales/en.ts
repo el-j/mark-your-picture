@@ -137,7 +137,8 @@ export const en = {
     responsible: {
       label: 'Responsible for content',
       body: 'This website is a non-commercial, open-source project. It is provided free of charge without any warranty of fitness for a particular purpose. The project is maintained by the GitHub user',
-      contact: 'Contact & provider information: See the GitHub profile linked below. For legal inquiries, please open an issue or reach out via the repository.',
+      contact:
+        'Contact & provider information: See the GitHub profile linked below. For legal inquiries, please open an issue or reach out via the repository.',
     },
     liability: {
       label: 'Liability Notice',

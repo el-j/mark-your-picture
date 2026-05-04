@@ -1,5 +1,13 @@
-import { createContext, useContext, useReducer, useCallback, useEffect, type ReactNode, type Dispatch } from 'react';
-import type { WatermarkPosition, RenderOptions } from '../lib/types';
+import {
+  createContext,
+  type Dispatch,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from 'react';
+import type { RenderOptions, WatermarkPosition } from '../lib/types';
 
 // ── State ───────────────────────────────────────────────────────────────────
 
@@ -99,7 +107,14 @@ export type WatermarkAction =
 function reducer(state: WatermarkState, action: WatermarkAction): WatermarkState {
   switch (action.type) {
     case 'SET_SOURCE':
-      return { ...state, sourceImg: action.img, sourceFile: action.file, freeX: 0.5, freeY: 0.5, hasApplied: false };
+      return {
+        ...state,
+        sourceImg: action.img,
+        sourceFile: action.file,
+        freeX: 0.5,
+        freeY: 0.5,
+        hasApplied: false,
+      };
     case 'CLEAR_SOURCE':
       return { ...state, sourceImg: null, sourceFile: null, hasApplied: false };
     case 'SET_ACTIVE_TAB':
@@ -170,7 +185,7 @@ function loadPersistedState(): Partial<WatermarkState> {
     const data = localStorage.getItem(PERSIST_KEY);
     if (!data) return {};
     return JSON.parse(data);
-  } catch (e) {
+  } catch {
     return {};
   }
 }
@@ -183,14 +198,41 @@ export function WatermarkProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Save serializable state settings to localStorage
     const {
-      activeTab, text, font, size, style, color, wmImgScale,
-      position, opacity, rotation, margin, freeX, freeY, mode
+      activeTab,
+      text,
+      font,
+      size,
+      style,
+      color,
+      wmImgScale,
+      position,
+      opacity,
+      rotation,
+      margin,
+      freeX,
+      freeY,
+      mode,
     } = state;
-    
-    localStorage.setItem(PERSIST_KEY, JSON.stringify({
-      activeTab, text, font, size, style, color, wmImgScale,
-      position, opacity, rotation, margin, freeX, freeY, mode
-    }));
+
+    localStorage.setItem(
+      PERSIST_KEY,
+      JSON.stringify({
+        activeTab,
+        text,
+        font,
+        size,
+        style,
+        color,
+        wmImgScale,
+        position,
+        opacity,
+        rotation,
+        margin,
+        freeX,
+        freeY,
+        mode,
+      }),
+    );
   }, [state]);
 
   const getRenderOpts = useCallback((): RenderOptions => {

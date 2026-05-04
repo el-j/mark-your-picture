@@ -1,29 +1,27 @@
-import { DesktopNav } from './DesktopNav';
-import { ThemeToggle } from './ThemeToggle';
-import { MobileMenu } from './MobileMenu';
-import { useI18n } from '../../i18n/index';
-import { useT } from '../../i18n/index';
 import type { Lang } from '../../i18n/index';
+import { useI18n, useT } from '../../i18n/index';
+import { DesktopNav } from './DesktopNav';
+import { MobileMenu } from './MobileMenu';
+import { ThemeToggle } from './ThemeToggle';
 
 function LangSwitcher() {
   const { lang, setLang } = useI18n();
+  const t = useT();
   return (
-    <div className="flex items-center gap-0.5 shrink-0">
-      {(['en', 'de'] as const).map((l: Lang) => (
-        <button
-          key={l}
-          onClick={() => setLang(l)}
-          aria-pressed={lang === l}
-          className={`px-2 py-1 text-[0.72rem] font-bold rounded-[var(--radius-sm)] border transition-all duration-[var(--transition)] uppercase
-            ${lang === l
-              ? 'bg-[var(--accent)] border-[var(--accent)] text-white'
-              : 'bg-transparent border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
-            }`}
-        >
-          {l}
-        </button>
-      ))}
-    </div>
+    <select
+      value={lang}
+      onChange={(e) => setLang(e.target.value as Lang)}
+      aria-label={t('header.langSwitcher')}
+      className="shrink-0 px-2 py-1 text-[0.72rem] font-bold uppercase
+                 rounded-[var(--radius-sm)] border border-[var(--border)]
+                 bg-transparent text-[var(--text-muted)]
+                 cursor-pointer transition-all duration-[var(--transition)]
+                 hover:border-[var(--accent)] hover:text-[var(--accent)]
+                 focus:outline-none focus:border-[var(--accent)] focus:text-[var(--accent)]"
+    >
+      <option value="en">EN</option>
+      <option value="de">DE</option>
+    </select>
   );
 }
 
@@ -49,7 +47,9 @@ export function Header() {
         <path d="M6 22L11 14l4 6 3-4 6 8H6z" fill="white" opacity=".9" />
         <circle cx="21" cy="11" r="3" fill="white" opacity=".9" />
         <path d="M4 26h24" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity=".5" />
-        <text x="7" y="29" fontSize="5" fill="white" opacity=".7" fontFamily="sans-serif">© WM</text>
+        <text x="7" y="29" fontSize="5" fill="white" opacity=".7" fontFamily="sans-serif">
+          © WM
+        </text>
       </svg>
 
       {/* Title */}

@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
-import { en, type Translations } from './locales/en';
+import { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
 import { de } from './locales/de';
+import { en, type Translations } from './locales/en';
 
 export type Lang = 'en' | 'de';
 
@@ -39,12 +39,15 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setLangState(next);
   }, []);
 
-  const t: TFunc = useCallback((key: string, vars?: Record<string, string | number>) => {
-    const raw = getByPath(locales[lang], key);
-    if (!vars) return raw;
-    // Replaces `{variableName}` placeholders in translation strings, e.g. t('batch.toastReady_many', { count: 5 })
-    return raw.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''));
-  }, [lang]);
+  const t: TFunc = useCallback(
+    (key: string, vars?: Record<string, string | number>) => {
+      const raw = getByPath(locales[lang], key);
+      if (!vars) return raw;
+      // Replaces `{variableName}` placeholders in translation strings, e.g. t('batch.toastReady_many', { count: 5 })
+      return raw.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''));
+    },
+    [lang],
+  );
 
   return <I18nContext.Provider value={{ lang, setLang, t }}>{children}</I18nContext.Provider>;
 }

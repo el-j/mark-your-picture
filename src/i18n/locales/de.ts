@@ -139,7 +139,8 @@ export const de: Translations = {
     responsible: {
       label: 'Verantwortlich für den Inhalt',
       body: 'Diese Website ist ein nicht-kommerzielles Open-Source-Projekt. Sie wird kostenlos und ohne jegliche Gewährleistung der Eignung für einen bestimmten Zweck bereitgestellt. Das Projekt wird vom GitHub-Benutzer',
-      contact: 'Kontakt- und Anbieterinformationen: Siehe das unten verlinkte GitHub-Profil. Für rechtliche Anfragen öffnen Sie bitte ein Issue oder wenden Sie sich über das Repository.',
+      contact:
+        'Kontakt- und Anbieterinformationen: Siehe das unten verlinkte GitHub-Profil. Für rechtliche Anfragen öffnen Sie bitte ein Issue oder wenden Sie sich über das Repository.',
     },
     liability: {
       label: 'Haftungshinweis',

@@ -1,27 +1,37 @@
-import { useRef, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useWatermark } from '../../contexts/WatermarkContext';
 import { useToast } from '../../hooks/useToast';
+import { useT } from '../../i18n/index';
 import { processBatch } from '../../lib/batch';
 import { ProgressBar } from './ProgressBar';
-import { useT } from '../../i18n/index';
 
 export function BatchPanel() {
   const { state, dispatch, getRenderOpts } = useWatermark();
   const { toast } = useToast();
   const t = useT();
-  const batchInputRef = useRef<HTMLInputElement>(null);
 
-  const loadBatchFiles = useCallback((files: File[]) => {
-    dispatch({ type: 'SET_BATCH_FILES', files });
-    const msg = files.length === 1 ? t('batch.toastReady_one') : t('batch.toastReady_many', { count: files.length });
-    toast(msg);
-  }, [dispatch, toast, t]);
+  const loadBatchFiles = useCallback(
+    (files: File[]) => {
+      dispatch({ type: 'SET_BATCH_FILES', files });
+      const msg =
+        files.length === 1
+          ? t('batch.toastReady_one')
+          : t('batch.toastReady_many', { count: files.length });
+      toast(msg);
+    },
+    [dispatch, toast, t],
+  );
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer?.files ?? []).filter((f) => f.type.startsWith('image/'));
-    if (files.length) loadBatchFiles(files);
-  }, [loadBatchFiles]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const files = Array.from(e.dataTransfer?.files ?? []).filter((f) =>
+        f.type.startsWith('image/'),
+      );
+      if (files.length) loadBatchFiles(files);
+    },
+    [loadBatchFiles],
+  );
 
   const handleBatch = useCallback(async () => {
     if (!state.batchFiles.length) return;
@@ -60,37 +70,73 @@ export function BatchPanel() {
     return map[status] ?? '';
   };
 
-  const btnBase = "inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-[var(--radius-sm)] text-[0.82rem] font-semibold cursor-pointer border-none transition-all w-full";
+  const btnBase =
+    'inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-[var(--radius-sm)] text-[0.82rem] font-semibold cursor-pointer border-none transition-all w-full';
 
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <p className="text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5">{t('batch.imagesLabel')}</p>
-        <div
-          onClick={() => batchInputRef.current?.click()}
+        <p className="text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5">
+          {t('batch.imagesLabel')}
+        </p>
+        <label
+          htmlFor="batch-file-input"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
-          className="border-2 border-dashed border-[var(--border)] rounded-[var(--radius)] py-3 px-4 text-center cursor-pointer transition-all bg-transparent hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
+          className="block border-2 border-dashed border-[var(--border)] rounded-[var(--radius)] py-3 px-4 text-center cursor-pointer transition-all bg-transparent hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
         >
-          <svg className="mx-auto mb-1 opacity-45" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" />
+          <svg
+            aria-hidden="true"
+            className="mx-auto mb-1 opacity-45"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+            <line x1="9" y1="15" x2="15" y2="15" />
           </svg>
-          <p className="text-[0.85rem] text-[var(--text-muted)]">{t('batch.dropzone')} <strong className="text-[var(--accent)]">{t('batch.dropzoneStrong')}</strong></p>
-          <p className="text-[0.72rem] mt-0.5 opacity-60 text-[var(--text-muted)]">{t('batch.dropzoneHint')}</p>
-          <input ref={batchInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => {
-            const files = Array.from(e.target.files ?? []);
-            if (files.length) loadBatchFiles(files);
-          }} />
-        </div>
+          <p className="text-[0.85rem] text-[var(--text-muted)]">
+            {t('batch.dropzone')}{' '}
+            <strong className="text-[var(--accent)]">{t('batch.dropzoneStrong')}</strong>
+          </p>
+          <p className="text-[0.72rem] mt-0.5 opacity-60 text-[var(--text-muted)]">
+            {t('batch.dropzoneHint')}
+          </p>
+          <input
+            type="file"
+            id="batch-file-input"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
+              if (files.length) loadBatchFiles(files);
+            }}
+          />
+        </label>
 
         <div className="mt-2.5 max-h-[160px] overflow-y-auto border border-[var(--border-subtle)] rounded-[var(--radius-sm)] bg-[var(--bg)] text-[0.78rem]">
           {state.batchFiles.length === 0 ? (
-            <div className="py-2.5 text-center text-[var(--text-muted)] text-[0.78rem]">{t('batch.noImages')}</div>
+            <div className="py-2.5 text-center text-[var(--text-muted)] text-[0.78rem]">
+              {t('batch.noImages')}
+            </div>
           ) : (
             state.batchFiles.map((file, i) => (
-              <div key={i} className="flex justify-between items-center py-1.5 px-3 border-b border-[var(--border-subtle)] last:border-b-0">
-                <span className="overflow-hidden text-ellipsis whitespace-nowrap flex-1 mr-2">{file.name}</span>
-                <span className={`text-[0.7rem] font-bold shrink-0 ${statusCls[state.batchStatuses[i]] ?? ''}`}>
+              <div
+                key={`${file.name}-${file.size}`}
+                className="flex justify-between items-center py-1.5 px-3 border-b border-[var(--border-subtle)] last:border-b-0"
+              >
+                <span className="overflow-hidden text-ellipsis whitespace-nowrap flex-1 mr-2">
+                  {file.name}
+                </span>
+                <span
+                  className={`text-[0.7rem] font-bold shrink-0 ${statusCls[state.batchStatuses[i]] ?? ''}`}
+                >
                   {getStatusLabel(state.batchStatuses[i])}
                 </span>
               </div>
@@ -100,14 +146,32 @@ export function BatchPanel() {
       </div>
 
       <div>
-        <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">{t('batch.wmTypeLabel')}</p>
+        <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">
+          {t('batch.wmTypeLabel')}
+        </p>
         <p className="text-[0.78rem] text-[var(--text-muted)]">{t('batch.wmTypeHint')}</p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <button onClick={handleBatch} disabled={!state.batchFiles.length || state.isProcessing}
-          className={`${btnBase} bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:bg-[var(--accent-hover)] hover:-translate-y-px active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`}>
-          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+        <button
+          type="button"
+          onClick={handleBatch}
+          disabled={!state.batchFiles.length || state.isProcessing}
+          className={`${btnBase} bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:bg-[var(--accent-hover)] hover:-translate-y-px active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`}
+        >
+          <svg
+            aria-hidden="true"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
           {t('batch.downloadZip')}
         </button>
         {state.isProcessing && <ProgressBar progress={state.batchProgress} />}

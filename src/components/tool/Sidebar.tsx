@@ -1,7 +1,7 @@
 import { useWatermark } from '../../contexts/WatermarkContext';
+import { BatchPanel } from './BatchPanel';
 import { ModeSelector } from './ModeSelector';
 import { SinglePanel } from './SinglePanel';
-import { BatchPanel } from './BatchPanel';
 
 export function Sidebar() {
   const { state } = useWatermark();
@@ -11,7 +11,9 @@ export function Sidebar() {
       <div className="bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-4">
         <ModeSelector />
       </div>
-      {state.mode === 'single' ? <SinglePanel /> : (
+      {state.mode === 'single' ? (
+        <SinglePanel />
+      ) : (
         <div className="bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-4">
           <BatchPanel />
         </div>

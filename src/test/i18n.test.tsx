@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
+import type React from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { I18nProvider, useI18n, useT } from '../i18n/index';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -22,7 +22,11 @@ function TranslationDisplay({ tKey }: { tKey: string }) {
 
 function SetLangButton({ newLang }: { newLang: 'en' | 'de' }) {
   const { setLang } = useI18n();
-  return <button onClick={() => setLang(newLang)}>switch</button>;
+  return (
+    <button type="button" onClick={() => setLang(newLang)}>
+      switch
+    </button>
+  );
 }
 
 // ── detectLang / default language ────────────────────────────────────────────
@@ -161,7 +165,9 @@ describe('useT – t()', () => {
       return (
         <>
           <span data-testid="t">{t('nav.tool')}</span>
-          <button onClick={() => act(() => setLang('de'))}>de</button>
+          <button type="button" onClick={() => act(() => setLang('de'))}>
+            de
+          </button>
         </>
       );
     }

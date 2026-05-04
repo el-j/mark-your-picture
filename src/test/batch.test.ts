@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 // We test the internal resolveOutputFormat logic via its observable effect on
 // processBatch by duplicating the pure mapping here, consistent with the

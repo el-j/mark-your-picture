@@ -1,14 +1,14 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
-import { I18nProvider } from './i18n/index';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import { Header } from './components/layout/Header';
+import { AboutPage } from './components/pages/AboutPage';
+import { ImprintPage } from './components/pages/ImprintPage';
+import { ToolPage } from './components/tool/ToolPage';
+import { InstallBanner } from './components/ui/InstallBanner';
+import { Toast } from './components/ui/Toast';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { WatermarkProvider } from './contexts/WatermarkContext';
 import { ToastProvider } from './hooks/useToast';
-import { Header } from './components/layout/Header';
-import { ToolPage } from './components/tool/ToolPage';
-import { AboutPage } from './components/pages/AboutPage';
-import { ImprintPage } from './components/pages/ImprintPage';
-import { Toast } from './components/ui/Toast';
-import { InstallBanner } from './components/ui/InstallBanner';
+import { I18nProvider } from './i18n/index';
 
 export default function App() {
   return (

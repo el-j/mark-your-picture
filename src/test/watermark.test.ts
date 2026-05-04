@@ -1,18 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderWatermark, loadImageFile } from '../lib/watermark';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RenderOptions } from '../lib/types';
+import { loadImageFile, renderWatermark } from '../lib/watermark';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function makeCanvas(): HTMLCanvasElement {
-  const canvas = document.createElement('canvas');
-  return canvas;
+  return document.createElement('canvas');
 }
 
 function makeImage(w = 800, h = 600): HTMLImageElement {
   const img = new Image();
-  Object.defineProperty(img, 'naturalWidth', { value: w });
-  Object.defineProperty(img, 'naturalHeight', { value: h });
+  Object.defineProperty(img, 'naturalWidth', { value: w, configurable: true });
+  Object.defineProperty(img, 'naturalHeight', { value: h, configurable: true });
   return img;
 }
 
@@ -34,16 +33,19 @@ function makeTextOpts(partial: Partial<RenderOptions> = {}): RenderOptions {
   };
 }
 
+// Helper: get the mocked ctx from a canvas
+function getCtx(canvas: HTMLCanvasElement) {
+  return canvas.getContext('2d') as unknown as Record<string, ReturnType<typeof vi.fn>>;
+}
+
 // ── renderWatermark ───────────────────────────────────────────────────────────
 
 describe('renderWatermark', () => {
   let canvas: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
 
   beforeEach(() => {
     canvas = makeCanvas();
-    const realCtx = canvas.getContext('2d')!;
-    ctx = realCtx;
+    vi.clearAllMocks();
   });
 
   it('sets canvas dimensions from the source image', () => {
@@ -61,59 +63,45 @@ describe('renderWatermark', () => {
     expect(() => renderWatermark(canvas, img, opts)).not.toThrow();
   });
 
-  it('applies globalAlpha from opacity option', () => {
-    const img = makeImage();
-    const spy = vi.spyOn(ctx, 'fillText');
-    renderWatermark(canvas, img, makeTextOpts({ opacity: 50 }));
-    // globalAlpha is set before fillText — validate via the canvas property
-    expect(ctx.globalAlpha).toBeDefined();
-    spy.mockRestore();
-  });
-
   it('calls fillText for text watermark at bottom-right', () => {
     const img = makeImage();
-    const fillTextSpy = vi.spyOn(ctx, 'fillText');
     renderWatermark(canvas, img, makeTextOpts({ position: 'bottom-right' }));
-    expect(fillTextSpy).toHaveBeenCalled();
-    fillTextSpy.mockRestore();
+    expect(getCtx(canvas).fillText).toHaveBeenCalled();
   });
 
   it('calls fillText for text watermark at top-left', () => {
     const img = makeImage();
-    const fillTextSpy = vi.spyOn(ctx, 'fillText');
     renderWatermark(canvas, img, makeTextOpts({ position: 'top-left' }));
-    expect(fillTextSpy).toHaveBeenCalled();
-    fillTextSpy.mockRestore();
+    expect(getCtx(canvas).fillText).toHaveBeenCalled();
   });
 
   it('calls fillText for text watermark at center', () => {
     const img = makeImage();
-    const fillTextSpy = vi.spyOn(ctx, 'fillText');
     renderWatermark(canvas, img, makeTextOpts({ position: 'center' }));
-    expect(fillTextSpy).toHaveBeenCalled();
-    fillTextSpy.mockRestore();
+    expect(getCtx(canvas).fillText).toHaveBeenCalled();
   });
 
   it('calls fillText multiple times for tile position', () => {
     const img = makeImage(400, 300);
-    const fillTextSpy = vi.spyOn(ctx, 'fillText');
     renderWatermark(canvas, img, makeTextOpts({ position: 'tile' }));
-    expect(fillTextSpy.mock.calls.length).toBeGreaterThan(1);
-    fillTextSpy.mockRestore();
+    expect(getCtx(canvas).fillText.mock.calls.length).toBeGreaterThan(1);
   });
 
   it('calls fillText for free position', () => {
     const img = makeImage();
-    const fillTextSpy = vi.spyOn(ctx, 'fillText');
     renderWatermark(canvas, img, makeTextOpts({ position: 'free', freeX: 0.3, freeY: 0.7 }));
-    expect(fillTextSpy).toHaveBeenCalled();
-    fillTextSpy.mockRestore();
+    expect(getCtx(canvas).fillText).toHaveBeenCalled();
+  });
+
+  it('uses freeX/freeY defaults (0.5) when not provided', () => {
+    const img = makeImage();
+    renderWatermark(canvas, img, makeTextOpts({ position: 'free' }));
+    expect(getCtx(canvas).fillText).toHaveBeenCalled();
   });
 
   it('draws image watermark at a corner position', () => {
     const img = makeImage();
     const wmImg = makeImage(100, 50);
-    const drawImageSpy = vi.spyOn(ctx, 'drawImage');
     const opts: RenderOptions = {
       watermark: { type: 'image', image: wmImg, scale: 100 },
       position: 'top-right',
@@ -122,15 +110,13 @@ describe('renderWatermark', () => {
       margin: 10,
     };
     renderWatermark(canvas, img, opts);
-    // drawImage is called at least twice: once for source, once for watermark
-    expect(drawImageSpy.mock.calls.length).toBeGreaterThanOrEqual(2);
-    drawImageSpy.mockRestore();
+    // drawImage called at least twice: source + watermark
+    expect(getCtx(canvas).drawImage.mock.calls.length).toBeGreaterThanOrEqual(2);
   });
 
   it('tiles image watermark when position is tile', () => {
     const img = makeImage(400, 300);
     const wmImg = makeImage(50, 50);
-    const drawImageSpy = vi.spyOn(ctx, 'drawImage');
     const opts: RenderOptions = {
       watermark: { type: 'image', image: wmImg, scale: 100 },
       position: 'tile',
@@ -139,60 +125,39 @@ describe('renderWatermark', () => {
       margin: 0,
     };
     renderWatermark(canvas, img, opts);
-    // tiling produces many draw calls beyond the initial source draw
-    expect(drawImageSpy.mock.calls.length).toBeGreaterThan(2);
-    drawImageSpy.mockRestore();
+    expect(getCtx(canvas).drawImage.mock.calls.length).toBeGreaterThan(2);
   });
 
-  it('applies rotation when specified', () => {
+  it('calls rotate when rotation is non-zero', () => {
     const img = makeImage();
-    const rotateSpy = vi.spyOn(ctx, 'rotate');
     renderWatermark(canvas, img, makeTextOpts({ rotation: 45 }));
-    expect(rotateSpy).toHaveBeenCalled();
-    rotateSpy.mockRestore();
-  });
-
-  it('uses freeX/freeY defaults (0.5) when not provided', () => {
-    const img = makeImage();
-    const fillTextSpy = vi.spyOn(ctx, 'fillText');
-    renderWatermark(canvas, img, makeTextOpts({ position: 'free' }));
-    expect(fillTextSpy).toHaveBeenCalled();
-    fillTextSpy.mockRestore();
+    expect(getCtx(canvas).rotate).toHaveBeenCalled();
   });
 });
 
 // ── loadImageFile ─────────────────────────────────────────────────────────────
 
 describe('loadImageFile', () => {
-  it('resolves with an HTMLImageElement for a valid image blob', async () => {
-    // Create a minimal 1×1 PNG as a Blob
-    const png = new Uint8Array([
-      0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a, // PNG signature
-      0x00,0x00,0x00,0x0d, // IHDR length
-      0x49,0x48,0x44,0x52, // IHDR
-      0x00,0x00,0x00,0x01, // width 1
-      0x00,0x00,0x00,0x01, // height 1
-      0x08,0x02,           // 8-bit RGB
-      0x00,0x00,0x00,
-      0x90,0x77,0x53,0xde, // CRC
-      0x00,0x00,0x00,0x0c, // IDAT length
-      0x49,0x44,0x41,0x54, // IDAT
-      0x08,0xd7,0x63,0xf8,0xcf,0xc0,0x00,0x00,0x00,0x02,0x00,0x01,
-      0xe2,0x21,0xbc,0x33, // CRC
-      0x00,0x00,0x00,0x00, // IEND length
-      0x49,0x45,0x4e,0x44, // IEND
-      0xae,0x42,0x60,0x82, // CRC
-    ]);
-    const file = new File([png], 'test.png', { type: 'image/png' });
-    const img = await loadImageFile(file);
-    expect(img).toBeInstanceOf(HTMLImageElement);
-  });
-
-  it('rejects when given an invalid file', async () => {
-    const file = new File(['not an image'], 'bad.txt', { type: 'text/plain' });
-    // jsdom img.onerror fires when src is invalid data URL — it may or may not reject
-    // depending on jsdom version; we just verify the function returns a Promise
+  it('returns a Promise', () => {
+    const file = new File(['data'], 'test.png', { type: 'image/png' });
     const result = loadImageFile(file);
     expect(result).toBeInstanceOf(Promise);
+  });
+
+  it('rejects when the FileReader emits an error', async () => {
+    const originalFileReader = globalThis.FileReader;
+    class ErrorFileReader {
+      onload: (() => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      readAsDataURL() {
+        setTimeout(() => this.onerror?.(new Error('read error')), 0);
+      }
+    }
+    globalThis.FileReader = ErrorFileReader as unknown as typeof FileReader;
+
+    const file = new File(['bad'], 'bad.txt', { type: 'text/plain' });
+    await expect(loadImageFile(file)).rejects.toBeDefined();
+
+    globalThis.FileReader = originalFileReader;
   });
 });

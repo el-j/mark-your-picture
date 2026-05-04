@@ -2,7 +2,8 @@ import { useT } from '../../i18n/index';
 
 export function AboutPage() {
   const t = useT();
-  const cardCls = "bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-3";
+  const cardCls =
+    'bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-3';
 
   return (
     <main className="max-w-[680px] mx-auto py-8 px-5 flex flex-col gap-4 w-full">
@@ -11,35 +12,45 @@ export function AboutPage() {
       </h2>
 
       <div className={cardCls}>
-        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">{t('about.why.heading')}</h3>
+        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">
+          {t('about.why.heading')}
+        </h3>
         <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
           {t('about.why.body')}
         </p>
       </div>
 
       <div className={cardCls}>
-        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">{t('about.noUpload.heading')}</h3>
+        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">
+          {t('about.noUpload.heading')}
+        </h3>
         <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
           {t('about.noUpload.body')}
         </p>
       </div>
 
       <div className={cardCls}>
-        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">{t('about.clientSide.heading')}</h3>
+        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">
+          {t('about.clientSide.heading')}
+        </h3>
         <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
           {t('about.clientSide.body')}
         </p>
       </div>
 
       <div className={cardCls}>
-        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">{t('about.whatYouCanDo.heading')}</h3>
+        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">
+          {t('about.whatYouCanDo.heading')}
+        </h3>
         <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
           {t('about.whatYouCanDo.body')}
         </p>
       </div>
 
       <div className={cardCls}>
-        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">{t('about.openSource.heading')}</h3>
+        <h3 className="text-[0.95rem] font-bold mb-1.5 text-[var(--text)]">
+          {t('about.openSource.heading')}
+        </h3>
         <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
           {t('about.openSource.body')}
         </p>
