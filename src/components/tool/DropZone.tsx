@@ -2,21 +2,23 @@ import { useCallback, useRef } from 'react';
 import { useWatermark } from '../../contexts/WatermarkContext';
 import { useToast } from '../../hooks/useToast';
 import { loadImageFile } from '../../lib/watermark';
+import { useT } from '../../i18n/index';
 
 export function DropZone() {
   const { dispatch } = useWatermark();
   const { toast } = useToast();
+  const t = useT();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadSource = useCallback(async (file: File) => {
     try {
       const img = await loadImageFile(file);
       dispatch({ type: 'SET_SOURCE', img, file });
-      toast('Image loaded ✓');
+      toast(t('dropzone.toastLoaded'));
     } catch {
-      toast('Failed to load image');
+      toast(t('dropzone.toastError'));
     }
-  }, [dispatch, toast]);
+  }, [dispatch, toast, t]);
 
   const handleClick = () => fileInputRef.current?.click();
 
@@ -56,9 +58,9 @@ export function DropZone() {
         <line x1="12" y1="3" x2="12" y2="15" />
       </svg>
       <p className="text-[0.85rem] text-[var(--text-muted)] leading-relaxed">
-        Drag &amp; drop or <strong className="text-[var(--accent)]">click to browse</strong>
+        {t('dropzone.hint')} <strong className="text-[var(--accent)]">{t('dropzone.hintStrong')}</strong>
       </p>
-      <p className="text-[0.72rem] mt-1 opacity-60 text-[var(--text-muted)]">PNG, JPG, WebP, GIF …</p>
+      <p className="text-[0.72rem] mt-1 opacity-60 text-[var(--text-muted)]">{t('dropzone.formats')}</p>
       <input ref={fileInputRef} type="file" id="file-input" accept="image/*" className="hidden" onChange={handleChange} />
     </div>
   );

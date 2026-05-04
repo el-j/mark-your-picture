@@ -1,13 +1,15 @@
 import { useTheme } from '../../contexts/ThemeContext';
+import { useT } from '../../i18n/index';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const t = useT();
 
   return (
     <button
       id="theme-toggle"
       onClick={toggleTheme}
-      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={theme === 'dark' ? t('theme.toLight') : t('theme.toDark')}
       className="flex items-center justify-center w-[34px] h-[34px] shrink-0
                  bg-transparent border border-[var(--border)] rounded-[var(--radius-sm)]
                  text-[var(--text-muted)] cursor-pointer

@@ -1,8 +1,34 @@
 import { DesktopNav } from './DesktopNav';
 import { ThemeToggle } from './ThemeToggle';
 import { MobileMenu } from './MobileMenu';
+import { useI18n } from '../../i18n/index';
+import { useT } from '../../i18n/index';
+import type { Lang } from '../../i18n/index';
+
+function LangSwitcher() {
+  const { lang, setLang } = useI18n();
+  return (
+    <div className="flex items-center gap-0.5 shrink-0">
+      {(['en', 'de'] as const).map((l: Lang) => (
+        <button
+          key={l}
+          onClick={() => setLang(l)}
+          aria-pressed={lang === l}
+          className={`px-2 py-1 text-[0.72rem] font-bold rounded-[var(--radius-sm)] border transition-all duration-[var(--transition)] uppercase
+            ${lang === l
+              ? 'bg-[var(--accent)] border-[var(--accent)] text-white'
+              : 'bg-transparent border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
+            }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export function Header() {
+  const t = useT();
   return (
     <header
       className="px-4 h-[54px] flex items-center gap-2.5
@@ -36,10 +62,11 @@ export function Header() {
         >
           Mark Your Picture
         </h1>
-        <p className="text-[0.68rem] text-[var(--text-muted)]">100% client-side · no upload</p>
+        <p className="text-[0.68rem] text-[var(--text-muted)]">{t('header.tagline')}</p>
       </div>
 
       <DesktopNav />
+      <LangSwitcher />
       <ThemeToggle />
       <MobileMenu />
     </header>

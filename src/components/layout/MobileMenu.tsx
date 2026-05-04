@@ -1,10 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { navItems } from './DesktopNav';
+import { useT } from '../../i18n/index';
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const t = useT();
 
   // Close menu on navigation
   useEffect(() => {
@@ -83,7 +85,7 @@ export function MobileMenu() {
             }
           >
             {item.icon}
-            {item.label}
+            {t(item.labelKey)}
           </NavLink>
         ))}
       </nav>
