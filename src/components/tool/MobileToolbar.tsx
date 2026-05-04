@@ -12,10 +12,10 @@ export function MobileToolbar({ activePanel, onOpenPanel }: MobileToolbarProps) 
   const btnBase =
     'flex flex-col items-center justify-center flex-1 h-full gap-1 border-none bg-transparent cursor-pointer transition-colors duration-200';
   const getBtnCls = (panel: MobilePanelType) =>
-    `${btnBase} ${activePanel === panel ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] hover:bg-[var(--surface2)] hover:text-[var(--text)]'}`;
+    `${btnBase} ${activePanel === panel ? 'text-(--accent)' : 'text-(--text-muted) hover:bg-(--surface2) hover:text-(--text)'}`;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-[64px] bg-[var(--surface)] border-t border-[var(--border)] z-50 flex items-center px-1 min-[900px]:hidden pb-[env(safe-area-inset-bottom)]">
+    <div className="fixed bottom-0 left-0 right-0 h-16 bg-(--surface) border-t border-(--border) z-50 flex items-center px-1 min-[900px]:hidden pb-[env(safe-area-inset-bottom)]">
       {/* Mode Button */}
       <button type="button" className={getBtnCls('mode')} onClick={() => onOpenPanel('mode')}>
         <svg

@@ -120,7 +120,7 @@ export function WatermarkCanvas() {
     <canvas
       ref={canvasRef}
       id="canvas"
-      className={`max-w-full max-h-full rounded-[var(--radius)] shadow-[var(--shadow)] ${state.position === 'free' ? 'cursor-crosshair' : 'cursor-default'}`}
+      className={`max-w-full max-h-full rounded-(--radius) shadow-(--shadow) ${state.position === 'free' ? 'cursor-crosshair' : 'cursor-default'}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
