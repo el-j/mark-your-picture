@@ -14,7 +14,7 @@ export function renderWatermark(
   canvas.height = sourceImage.naturalHeight;
   ctx.drawImage(sourceImage, 0, 0);
 
-  const { watermark, position, opacity, rotation, margin } = opts;
+  const { watermark, position, opacity, rotation, margin, freeX, freeY } = opts;
   const rad = (rotation * Math.PI) / 180;
 
   ctx.save();
@@ -37,7 +37,7 @@ export function renderWatermark(
         ctx.fillText(text, cx, cy);
       });
     } else {
-      const [px, py] = corner(position, canvas.width, canvas.height, tw, th, margin);
+      const [px, py] = corner(position, canvas.width, canvas.height, tw, th, margin, freeX, freeY);
       ctx.save();
       ctx.translate(px + tw / 2, py + th / 2);
       ctx.rotate(rad);
@@ -54,7 +54,7 @@ export function renderWatermark(
         ctx.drawImage(image, cx - iw / 2, cy - ih / 2, iw, ih);
       });
     } else {
-      const [px, py] = corner(position, canvas.width, canvas.height, iw, ih, margin);
+      const [px, py] = corner(position, canvas.width, canvas.height, iw, ih, margin, freeX, freeY);
       ctx.save();
       ctx.translate(px + iw / 2, py + ih / 2);
       ctx.rotate(rad);
@@ -95,6 +95,8 @@ function corner(
   ww: number,
   wh: number,
   margin: number,
+  freeX?: number,
+  freeY?: number,
 ): [number, number] {
   switch (position) {
     case 'top-left':     return [margin, margin];
@@ -102,6 +104,7 @@ function corner(
     case 'bottom-left':  return [margin, ch - wh - margin];
     case 'bottom-right': return [cw - ww - margin, ch - wh - margin];
     case 'center':       return [(cw - ww) / 2, (ch - wh) / 2];
+    case 'free':         return [(freeX ?? 0.5) * cw - ww / 2, (freeY ?? 0.5) * ch - wh / 2];
     default:             return [cw - ww - margin, ch - wh - margin];
   }
 }

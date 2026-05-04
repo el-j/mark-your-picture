@@ -18,72 +18,90 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2728870159466670"
      crossorigin="anonymous"></script>
   <style>
-    /* ── Reset & base ──────────────────────────────────────────────────────── */
+    /* ── Reset & base ────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Design tokens ─────────────────────────────────────────────────────── */
+    /* ── Design tokens ──────────────────────────────────────────────────────── */
     :root {
-      --radius: 12px;
-      --transition: 0.2s ease;
+      --radius:     14px;
+      --radius-sm:  8px;
+      --transition: 0.18s ease;
     }
 
     [data-theme="dark"] {
-      --bg:           #0f1117;
-      --surface:      #1a1d27;
-      --surface2:     #22263a;
-      --border:       #2e3450;
-      --accent:       #6c63ff;
-      --accent-hover: #8880ff;
-      --text:         #e8eaf6;
-      --text-muted:   #8892b0;
-      --danger:       #ff4d6d;
-      --success:      #3ddc84;
-      --shadow:       0 4px 24px rgba(0,0,0,.45);
-      --checker-a:    #1c1f2e;
-      --checker-b:    #181b28;
+      --bg:            #0b0d14;
+      --surface:       #13151f;
+      --surface2:      #1c1f2e;
+      --surface3:      #232741;
+      --border:        #2a2f4a;
+      --border-subtle: #1e2238;
+      --accent:        #6c63ff;
+      --accent-hover:  #8880ff;
+      --accent-glow:   rgba(108,99,255,.25);
+      --text:          #e4e8f5;
+      --text-muted:    #7880a0;
+      --danger:        #ff4d6d;
+      --success:       #3ddc84;
+      --warn:          #f59e0b;
+      --shadow:        0 8px 32px rgba(0,0,0,.55);
+      --shadow-sm:     0 2px 12px rgba(0,0,0,.35);
+      --checker-a:     #181b28;
+      --checker-b:     #13151f;
     }
 
     [data-theme="light"] {
-      --bg:           #f4f6fb;
-      --surface:      #ffffff;
-      --surface2:     #f0f3fa;
-      --border:       #d4d9ef;
-      --accent:       #5249e0;
-      --accent-hover: #6c63ff;
-      --text:         #1a1d27;
-      --text-muted:   #6b7280;
-      --danger:       #dc2626;
-      --success:      #16a34a;
-      --shadow:       0 4px 24px rgba(82,73,224,.10);
-      --checker-a:    #e2e8f0;
-      --checker-b:    #eef1f7;
+      --bg:            #f0f3fb;
+      --surface:       #ffffff;
+      --surface2:      #f5f7fe;
+      --surface3:      #eaedfa;
+      --border:        #d0d5ee;
+      --border-subtle: #e8eaf6;
+      --accent:        #5249e0;
+      --accent-hover:  #6c63ff;
+      --accent-glow:   rgba(82,73,224,.18);
+      --text:          #1a1d2e;
+      --text-muted:    #6b7280;
+      --danger:        #dc2626;
+      --success:       #16a34a;
+      --warn:          #d97706;
+      --shadow:        0 8px 32px rgba(82,73,224,.12);
+      --shadow-sm:     0 2px 8px rgba(82,73,224,.08);
+      --checker-a:     #e8eaf8;
+      --checker-b:     #f0f3fb;
     }
 
-    /* ── Typography ────────────────────────────────────────────────────────── */
+    /* ── Typography ─────────────────────────────────────────────────────────── */
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      font-size: 15px;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    /* ── Header ────────────────────────────────────────────────────────────── */
+    /* ── Header ─────────────────────────────────────────────────────────────── */
     header {
-      padding: 0.9rem 1.25rem;
+      padding: 0 1rem;
+      height: 54px;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 20;
+      backdrop-filter: blur(12px);
     }
 
-    .header-logo { flex-shrink: 0; }
+    .header-logo {
+      flex-shrink: 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
     .header-title {
       flex: 1;
@@ -91,97 +109,229 @@
     }
 
     .header-title h1 {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      background: linear-gradient(130deg, var(--accent) 0%, #a78bfa 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      letter-spacing: -0.01em;
     }
 
     .header-title p {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
-      margin-top: 0.1rem;
     }
 
+    /* ── Theme toggle ───────────────────────────────────────────────────────── */
     #theme-toggle {
       background: none;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       color: var(--text-muted);
       cursor: pointer;
-      padding: 0.4rem;
+      padding: 0.38rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: border-color var(--transition), color var(--transition);
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
       flex-shrink: 0;
+      width: 34px; height: 34px;
     }
-    #theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    #theme-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
 
-    /* ── Layout ────────────────────────────────────────────────────────────── */
+    /* ── Desktop nav ────────────────────────────────────────────────────────── */
+    .main-nav { display: none; }
+
+    @media (min-width: 900px) {
+      .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        flex-shrink: 0;
+      }
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .nav-link:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
+    .nav-link.nav-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Hamburger ──────────────────────────────────────────────────────────── */
+    .hamburger-btn {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 36px; height: 36px;
+      background: transparent;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      z-index: 101;
+      border-radius: var(--radius-sm);
+      transition: background var(--transition), border-color var(--transition);
+      flex-shrink: 0;
+      gap: 4px;
+      padding: 0;
+    }
+    .hamburger-btn:hover { background: var(--surface2); border-color: var(--accent); }
+
+    @media (min-width: 900px) { .hamburger-btn { display: none; } }
+
+    .hamburger-line {
+      width: 16px; height: 1.5px;
+      background: var(--text-muted);
+      border-radius: 2px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .hamburger-btn.is-active .hamburger-line:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .hamburger-btn.is-active .hamburger-line:nth-child(2) { opacity: 0; }
+    .hamburger-btn.is-active .hamburger-line:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    /* ── Mobile nav drawer ──────────────────────────────────────────────────── */
+    .main-nav-mobile {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 260px; max-width: 80%;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 70px 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      z-index: 99;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 32px rgba(0,0,0,.2);
+    }
+    .main-nav-mobile.is-open { transform: translateX(0); }
+    .main-nav-mobile .nav-link { font-size: 0.95rem; padding: 0.65rem 0.9rem; }
+
+    .menu-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 98;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+    .menu-overlay.is-visible { opacity: 1; visibility: visible; }
+
+    /* ── App layout ─────────────────────────────────────────────────────────── */
     .app-layout {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      /* Mobile: canvas-area first (top), sidebar below */
     }
 
     @media (min-width: 900px) {
       .app-layout {
         flex-direction: row;
       }
+      /* Sidebar first (left) on desktop, even though it's second in HTML */
+      .sidebar { order: -1; }
     }
 
-    /* ── Sidebar ───────────────────────────────────────────────────────────── */
+    /* ── Sidebar ────────────────────────────────────────────────────────────── */
     .sidebar {
       background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 1.25rem;
+      border-top: 1px solid var(--border);
+      padding: 0.85rem 0.9rem 1.25rem;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     @media (min-width: 900px) {
       .sidebar {
-        width: 320px;
+        width: 300px;
         flex-shrink: 0;
-        border-bottom: none;
+        border-top: none;
         border-right: 1px solid var(--border);
-        max-height: calc(100vh - 58px);
+        max-height: calc(100vh - 54px);
+        padding: 1rem;
+        gap: 0.9rem;
       }
     }
 
-    /* ── Main canvas area ──────────────────────────────────────────────────── */
+    /* ── Canvas area (first in HTML = first on mobile) ───────────────────────── */
     .canvas-area {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
+      position: relative;
       overflow: auto;
       background:
         repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%)
         0 0 / 20px 20px;
-      min-height: 260px;
+      min-height: 220px;
     }
 
-    #canvas { max-width: 100%; max-height: 70vh; border-radius: var(--radius); box-shadow: var(--shadow); display: none; }
+    @media (max-width: 899px) {
+      .canvas-area { min-height: 260px; max-height: 55vh; }
+    }
 
+    #canvas {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: none;
+      cursor: default;
+    }
+
+    /* canvas shows move cursor in free mode */
+    #canvas.free-mode { cursor: crosshair; }
+
+    /* ── Drop zone (lives inside canvas-area) ────────────────────────────────── */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      background: transparent;
+      width: calc(100% - 2.5rem);
+      max-width: 420px;
+    }
+    .drop-zone:hover, .drop-zone.over {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .drop-zone svg { opacity: .45; margin-bottom: 0.6rem; }
+    .drop-zone p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+    .drop-zone strong { color: var(--accent); }
+    .drop-zone .hint { font-size: 0.72rem; margin-top: 0.3rem; opacity: .6; }
+    input[type="file"] { display: none; }
+
+    /* ── Empty state ────────────────────────────────────────────────────────── */
     .empty-state { text-align: center; color: var(--text-muted); }
-    .empty-state svg { opacity: .3; margin-bottom: 0.75rem; }
-    .empty-state p { font-size: 0.88rem; }
+    .empty-state svg { opacity: .25; margin-bottom: 0.6rem; }
+    .empty-state p { font-size: 0.82rem; }
 
-    /* ── Section label ─────────────────────────────────────────────────────── */
+    /* ── Section label ──────────────────────────────────────────────────────── */
     .section-label {
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -189,94 +339,77 @@
       margin-bottom: 0.4rem;
     }
 
-    /* ── Card ──────────────────────────────────────────────────────────────── */
+    /* ── Card ───────────────────────────────────────────────────────────────── */
     .card {
       background: var(--surface2);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
-      padding: 0.9rem;
+      padding: 0.8rem;
     }
 
-    /* ── Drop zone ─────────────────────────────────────────────────────────── */
-    .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem 1rem;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
-      background: var(--surface2);
-    }
-    .drop-zone:hover, .drop-zone.over {
-      border-color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 8%, transparent);
-    }
-    .drop-zone svg { opacity: .5; margin-bottom: 0.4rem; }
-    .drop-zone p { font-size: 0.82rem; color: var(--text-muted); }
-    .drop-zone strong { color: var(--accent); }
-    input[type="file"] { display: none; }
-
-    /* ── Mode tabs (Single / Batch) ────────────────────────────────────────── */
-    .mode-tabs {
+    /* ── Mode tabs ──────────────────────────────────────────────────────────── */
+    .seg-tabs {
       display: flex;
-      gap: 0.4rem;
+      background: var(--surface2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      gap: 3px;
     }
-
-    .mode-btn {
+    .seg-btn {
       flex: 1;
-      padding: 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg);
+      padding: 0.38rem 0.5rem;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
       color: var(--text-muted);
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
       transition: all var(--transition);
     }
-    .mode-btn.active {
+    .seg-btn.active {
       background: var(--accent);
-      border-color: var(--accent);
       color: #fff;
+      box-shadow: 0 1px 4px var(--accent-glow);
     }
-    .mode-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+    .seg-btn:hover:not(.active) { background: var(--surface3); color: var(--text); }
 
-    /* ── Mode panels ───────────────────────────────────────────────────────── */
-    #single-panel, #batch-panel { display: none; }
-    #single-panel.active, #batch-panel.active { display: block; }
+    /* ── Mode panels ────────────────────────────────────────────────────────── */
+    #single-panel, #batch-panel { display: none; flex-direction: column; gap: 0.75rem; }
+    #single-panel.active, #batch-panel.active { display: flex; }
 
-    /* ── Watermark type tabs ───────────────────────────────────────────────── */
-    .tabs {
-      display: flex;
-      gap: 0.35rem;
-      margin-bottom: 0.75rem;
+    @media (min-width: 900px) {
+      #single-panel, #batch-panel { gap: 0.9rem; }
     }
+
+    /* ── Tab panels (Text / Image watermark) ────────────────────────────────── */
+    .tabs { display: flex; gap: 0.3rem; margin-bottom: 0.7rem; }
     .tab-btn {
       flex: 1;
-      padding: 0.42rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      padding: 0.38rem 0.4rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
       background: var(--bg);
       color: var(--text-muted);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all var(--transition);
     }
-    .tab-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .tab-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* ── Form controls ─────────────────────────────────────────────────────── */
+    /* ── Form controls ──────────────────────────────────────────────────────── */
     label {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
+      font-weight: 500;
       color: var(--text-muted);
-      margin-bottom: 0.3rem;
-      margin-top: 0.7rem;
+      margin-bottom: 0.25rem;
+      margin-top: 0.65rem;
     }
     label:first-child { margin-top: 0; }
 
@@ -286,16 +419,19 @@
       width: 100%;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       color: var(--text);
-      padding: 0.45rem 0.7rem;
-      font-size: 0.82rem;
+      padding: 0.42rem 0.65rem;
+      font-size: 0.8rem;
       outline: none;
-      transition: border-color var(--transition);
+      transition: border-color var(--transition), box-shadow var(--transition);
     }
     input[type="text"]:focus,
     input[type="number"]:focus,
-    select:focus { border-color: var(--accent); }
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
     select option { background: var(--surface); }
 
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
@@ -304,134 +440,167 @@
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
-      height: 4px;
+      height: 3px;
       border-radius: 2px;
       background: var(--border);
       outline: none;
-      margin-top: 0.35rem;
+      margin-top: 0.3rem;
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 16px; height: 16px;
+      width: 14px; height: 14px;
       border-radius: 50%;
       background: var(--accent);
       cursor: pointer;
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1px var(--accent);
     }
     input[type="range"]::-webkit-slider-thumb:hover { background: var(--accent-hover); }
 
-    .range-row { display: flex; align-items: center; gap: 0.6rem; }
-    .range-row span { min-width: 2.8rem; text-align: right; font-size: 0.78rem; color: var(--text); }
+    .range-row { display: flex; align-items: center; gap: 0.55rem; }
+    .range-row span {
+      min-width: 2.8rem;
+      text-align: right;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
 
     input[type="color"] {
-      width: 34px; height: 34px;
-      border-radius: 8px;
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       background: none;
       cursor: pointer;
       padding: 2px;
+      flex-shrink: 0;
     }
-    .color-row { display: flex; align-items: center; gap: 0.5rem; }
+    .color-row { display: flex; align-items: center; gap: 0.45rem; }
     .color-row input[type="text"] { flex: 1; }
 
-    /* ── Watermark image drop ──────────────────────────────────────────────── */
+    /* ── Watermark image drop (inside card) ──────────────────────────────────── */
     #wm-img-drop {
       border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 1rem 0.6rem;
+      border-radius: var(--radius-sm);
+      padding: 0.8rem 0.5rem;
       text-align: center;
       cursor: pointer;
       background: var(--bg);
-      transition: border-color var(--transition);
-      font-size: 0.78rem;
+      transition: border-color var(--transition), background var(--transition);
+      font-size: 0.75rem;
       color: var(--text-muted);
     }
-    #wm-img-drop:hover { border-color: var(--accent); }
-    #wm-img-preview { width: 100%; max-height: 70px; object-fit: contain; margin-top: 0.45rem; display: none; border-radius: 6px; }
+    #wm-img-drop:hover { border-color: var(--accent); background: var(--accent-glow); }
+    #wm-img-preview {
+      width: 100%; max-height: 60px;
+      object-fit: contain;
+      margin-top: 0.4rem;
+      display: none;
+      border-radius: 6px;
+    }
 
-    /* ── Buttons ───────────────────────────────────────────────────────────── */
+    /* ── Free-mode hint ─────────────────────────────────────────────────────── */
+    #free-hint {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.7rem;
+      background: color-mix(in srgb, var(--warn) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
+      border-radius: var(--radius-sm);
+      font-size: 0.74rem;
+      color: var(--warn);
+      margin-top: 0.5rem;
+    }
+    #free-hint svg { flex-shrink: 0; }
+
+    /* ── Buttons ────────────────────────────────────────────────────────────── */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.4rem;
       padding: 0.6rem 1rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       border: none;
       transition: all var(--transition);
       width: 100%;
+      letter-spacing: 0.01em;
     }
-
     .btn-primary {
       background: var(--accent);
       color: #fff;
+      box-shadow: 0 2px 8px var(--accent-glow);
     }
-    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 16px var(--accent-glow); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .btn-success {
       background: var(--success);
       color: #fff;
+      box-shadow: 0 2px 8px rgba(61,220,132,.2);
     }
-    .btn-success:hover { opacity: .88; transform: translateY(-1px); }
-    .btn-success:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .btn-success:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-success:active { transform: translateY(0); }
+    .btn-success:disabled { opacity: .35; cursor: not-allowed; transform: none; }
 
     .btn-ghost {
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text-muted);
     }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
 
-    .btn-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .btn-group { display: flex; flex-direction: column; gap: 0.45rem; }
 
-    /* ── Batch list ────────────────────────────────────────────────────────── */
+    /* ── Batch list ─────────────────────────────────────────────────────────── */
     .batch-list {
-      margin-top: 0.75rem;
-      max-height: 180px;
+      margin-top: 0.6rem;
+      max-height: 160px;
       overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
       background: var(--bg);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
     }
-
     .batch-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid var(--border);
+      padding: 0.45rem 0.7rem;
+      border-bottom: 1px solid var(--border-subtle);
     }
     .batch-item:last-child { border-bottom: none; }
     .batch-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-right: 0.5rem; }
-
-    .batch-status { font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
+    .batch-status { font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
     .batch-status.pending    { color: var(--text-muted); }
     .batch-status.processing { color: var(--accent); }
     .batch-status.done       { color: var(--success); }
     .batch-status.error      { color: var(--danger); }
 
-    /* ── Progress bar ──────────────────────────────────────────────────────── */
+    /* ── Progress bar ───────────────────────────────────────────────────────── */
     #progress-wrap {
       display: none;
-      margin-top: 0.75rem;
-      height: 6px;
-      background: var(--border);
+      margin-top: 0.6rem;
+      height: 5px;
+      background: var(--border-subtle);
       border-radius: 3px;
       overflow: hidden;
     }
     #progress-bar {
       height: 100%;
-      background: var(--success);
+      background: linear-gradient(90deg, var(--accent), var(--success));
       width: 0%;
       transition: width 0.3s;
     }
 
-    /* ── Toast ─────────────────────────────────────────────────────────────── */
+    /* ── Toast ──────────────────────────────────────────────────────────────── */
     #toast {
       position: fixed;
       bottom: 1.5rem;
@@ -440,18 +609,18 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 9999px;
-      padding: 0.5rem 1.25rem;
-      font-size: 0.82rem;
+      padding: 0.45rem 1.1rem;
+      font-size: 0.8rem;
       color: var(--text);
-      box-shadow: var(--shadow);
-      transition: transform 0.3s;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
       pointer-events: none;
       z-index: 100;
       white-space: nowrap;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
 
-    /* ── Install banner ────────────────────────────────────────────────────── */
+    /* ── Install banner ─────────────────────────────────────────────────────── */
     #install-banner {
       display: none;
       position: fixed;
@@ -461,33 +630,30 @@
       background: var(--surface);
       border: 1px solid var(--accent);
       border-radius: var(--radius);
-      padding: 0.8rem 1rem;
+      padding: 0.75rem 1rem;
       box-shadow: var(--shadow);
       z-index: 99;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       max-width: calc(100vw - 2rem);
-      animation: slideUp 0.35s ease;
+      animation: slideUp 0.3s ease;
     }
     #install-banner.visible { display: flex; }
-
     @keyframes slideUp {
       from { opacity: 0; transform: translateX(-50%) translateY(1.5rem); }
       to   { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
-
     .install-icon { flex-shrink: 0; border-radius: 10px; overflow: hidden; }
     .install-text { flex: 1; min-width: 0; }
-    .install-text strong { display: block; font-size: 0.88rem; }
-    .install-text span   { font-size: 0.75rem; color: var(--text-muted); }
-
+    .install-text strong { display: block; font-size: 0.85rem; }
+    .install-text span   { font-size: 0.72rem; color: var(--text-muted); }
     .btn-install {
       background: var(--accent);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 0.45rem 0.85rem;
-      font-size: 0.82rem;
+      border-radius: var(--radius-sm);
+      padding: 0.42rem 0.8rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
@@ -495,226 +661,56 @@
       transition: background var(--transition);
     }
     .btn-install:hover { background: var(--accent-hover); }
-
     .btn-dismiss {
       background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 1rem;
       line-height: 1;
       padding: 0.2rem;
       flex-shrink: 0;
     }
     .btn-dismiss:hover { color: var(--text); }
 
-    /* ── Navigation ────────────────────────────────────────────────────────── */
-    .main-nav {
-      display: none;
-    
-    }
-    .main-nav-mobile {
-      display: flex;
-          align-items: center;
-          gap: 0.3rem;
-          flex-shrink: 0;
-    
-    }
-
-    @media (min-width: 900px) {
-      .main-nav-mobile { display: none; }
-        .main-nav {
-          display: flex;
-          align-items: center;
-          gap: 0.3rem;
-          flex-shrink: 0;
-        }
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.35rem 0.7rem;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      border: 1px solid transparent;
-      transition: border-color var(--transition), color var(--transition), background var(--transition);
-      white-space: nowrap;
-    }
-    .nav-link:hover { border-color: var(--border); color: var(--text); }
-    .nav-link.nav-active { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-    /* ── Page containers ───────────────────────────────────────────────────── */
+    /* ── Page containers ────────────────────────────────────────────────────── */
     .page { display: none; }
-    .page.page-active { display: flex; flex-direction: column; flex: 1; }
+    .page.page-active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
 
-    /* ── Info pages (About / Imprint) ──────────────────────────────────────── */
+    /* ── Info pages (About / Imprint) ────────────────────────────────────────── */
     .info-page {
       max-width: 680px;
       margin: 0 auto;
       padding: 2rem 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.1rem;
       width: 100%;
     }
     .info-page h2 {
       font-size: 1.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      background: linear-gradient(130deg, var(--accent), #a78bfa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .info-page h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-    .info-page p {
-      font-size: 0.88rem;
-      line-height: 1.65;
-      color: var(--text-muted);
-    }
+    .info-page h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text); }
+    .info-page p { font-size: 0.85rem; line-height: 1.65; color: var(--text-muted); }
 
-     .hamburger-btn {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 44px;
-      height: 44px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 101; /* Stays above the menu overlay */
-      padding: 10px;
-      border-radius: 8px;
-      transition: background-color 0.2s ease;
-    }
+    /* ── Scrollbar ──────────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-    @media (min-width: 900px) {
-      .hamburger-btn { display: none; }
-    }
-
-    .hamburger-btn:hover {
-      background-color: var(--link-hover-bg);
-    }
-
-    /* The 3 lines of the hamburger */
-    .hamburger-line {
-      width: 24px;
-      height: 2px;
-      background-color: var(--accent);
-      border-radius: 2px;
-      transition: transform var(--transition-speed) ease, opacity var(--transition-speed) ease;
-      margin: 2.5px 0;
-    }
-
-    /* Hamburger Active (Close 'X') State */
-    .hamburger-btn.is-active .hamburger-line:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-    }
-    
-    .hamburger-btn.is-active .hamburger-line:nth-child(2) {
-      opacity: 0;
-    }
-    
-    .hamburger-btn.is-active .hamburger-line:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
-    }
-
-    /* ==========================================================================
-       Navigation Menu (Your provided HTML, styled)
-       ========================================================================== */
-    .main-nav-mobile {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 280px;
-      max-width: 80%;
-      background-color: var(--menu-bg);
-      backdrop-filter: blur(12px); /* Frosted glass effect */
-      -webkit-backdrop-filter: blur(12px);
-      border-left: 1px solid var(--border-color);
-      padding: 80px 1.5rem 2rem 1.5rem; /* Top padding clears the header */
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      z-index: 99;
-      
-      /* Animation settings */
-      transform: translateX(100%);
-      transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: -5px 0 25px rgba(0,0,0,0.1);
-    }
-
-    /* Open state for the menu */
-    .main-nav-mobile.is-open {
-      transform: translateX(0);
-    }
-
-    /* Style the links inside your nav */
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      color: var(--text-color);
-      text-decoration: none;
-      font-size: 1.125rem;
-      font-weight: 500;
-      border-radius: 12px;
-      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    }
-
-    .nav-link:hover, .nav-link:focus {
-      background-color: var(--link-hover-bg);
-      outline: none;
-    }
-
-    .nav-link:active {
-      transform: scale(0.98);
-    }
-
-    /* Optional: active route styling */
-    .nav-link.active {
-      color: var(--link-active-color);
-      background-color: var(--link-hover-bg);
-    }
-
-    /* ==========================================================================
-       Background Overlay
-       ========================================================================== */
-    .menu-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--overlay-bg);
-      z-index: 98;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
-    }
-
-    .menu-overlay.is-visible {
-      opacity: 1;
-      visibility: visible;
-    }
     .w-full { width: 100%; }
   </style>
 </head>
 <body>
 
 <header>
-  <svg class="header-logo" role="img" aria-label="Mark Your Picture logo" width="30" height="30" viewBox="0 0 32 32" fill="none">
+  <svg class="header-logo" role="img" aria-label="Mark Your Picture logo" width="28" height="28" viewBox="0 0 32 32" fill="none">
     <rect width="32" height="32" rx="8" fill="#6c63ff"/>
     <path d="M6 22L11 14l4 6 3-4 6 8H6z" fill="white" opacity=".9"/>
     <circle cx="21" cy="11" r="3" fill="white" opacity=".9"/>
@@ -727,228 +723,247 @@
   </div>
   <nav class="main-nav" aria-label="Main navigation">
     <a href="#/" class="nav-link" data-route="/">
-      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      <span>Tool</span>
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Tool
     </a>
     <a href="#/about" class="nav-link" data-route="/about">
-      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span>About</span>
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About
     </a>
     <a href="#/imprint" class="nav-link" data-route="/imprint">
-      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      <span>Imprint</span>
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Imprint
     </a>
-    
   </nav>
-   <button id="theme-toggle" aria-label="Switch theme"></button>
-   <button class="hamburger-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-    </button>
-   <nav class="main-nav-mobile" aria-label="Main navigation">
+  <button id="theme-toggle" aria-label="Switch theme"></button>
+  <button class="hamburger-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+  <nav class="main-nav-mobile" id="mobile-menu" aria-label="Main navigation">
     <a href="#/" class="nav-link w-full" data-route="/">
       <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      <span>Tool</span>
+      Tool
     </a>
     <a href="#/about" class="nav-link w-full" data-route="/about">
       <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span>About</span>
+      About
     </a>
     <a href="#/imprint" class="nav-link w-full" data-route="/imprint">
-      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      <span>Imprint</span>
+      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Imprint
     </a>
-  
   </nav>
-   
 </header>
 
+<!-- ── Home page ─────────────────────────────────────────────────────────── -->
 <div id="page-home" class="page page-active">
 <div class="app-layout">
 
-  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+  <!-- ── Canvas area (HTML-first → top on mobile) ─────────────────────────── -->
+  <section class="canvas-area">
+    <!-- Drop zone shown until image is loaded -->
+    <div class="drop-zone" id="drop-zone">
+      <svg role="img" aria-label="Upload image" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <p>Drag &amp; drop or <strong>click to browse</strong></p>
+      <p class="hint">PNG, JPG, WebP, GIF …</p>
+      <input type="file" id="file-input" accept="image/*" />
+    </div>
+    <!-- Canvas shown after image is loaded -->
+    <canvas id="canvas"></canvas>
+  </section>
+
+  <!-- ── Sidebar (order:-1 on desktop → appears left) ─────────────────────── -->
   <aside class="sidebar">
 
     <!-- Mode selector -->
     <div>
       <p class="section-label">Mode</p>
-      <div class="mode-tabs">
-        <button class="mode-btn active" data-mode="single">Single Image</button>
-        <button class="mode-btn"        data-mode="batch">Batch (ZIP)</button>
+      <div class="seg-tabs">
+        <button class="seg-btn active" data-mode="single">Single Image</button>
+        <button class="seg-btn"        data-mode="batch">Batch (ZIP)</button>
       </div>
     </div>
 
-    <!-- Single image upload -->
+    <!-- ── Single-mode controls ─────────────────────────────────────────── -->
     <div id="single-panel" class="active">
-      <p class="section-label">Image</p>
-      <div class="drop-zone" id="drop-zone">
-        <svg role="img" aria-label="Upload image" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="3" y="3" width="18" height="18" rx="2"/>
-          <circle cx="8.5" cy="8.5" r="1.5"/>
-          <polyline points="21 15 16 10 5 21"/>
-        </svg>
-        <p>Drag &amp; drop or <strong>click to browse</strong></p>
-        <p style="font-size:.7rem;margin-top:.2rem">PNG, JPG, WebP, GIF …</p>
-        <input type="file" id="file-input" accept="image/*" />
-      </div>
-    </div>
 
-    <!-- Batch image upload -->
-    <div id="batch-panel">
-      <p class="section-label">Images</p>
-      <div class="drop-zone" id="batch-drop">
-        <svg role="img" aria-label="Upload multiple images" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="12" y1="18" x2="12" y2="12"/>
-          <line x1="9" y1="15" x2="15" y2="15"/>
-        </svg>
-        <p>Drag &amp; drop or <strong>click to select</strong></p>
-        <p style="font-size:.7rem;margin-top:.2rem">Select multiple images</p>
-        <input type="file" id="batch-input" accept="image/*" multiple />
-      </div>
-      <div class="batch-list" id="batch-list">
-        <div style="padding:.75rem;text-align:center;color:var(--text-muted);font-size:.8rem">No images selected yet</div>
-      </div>
-    </div>
+      <!-- Watermark type card -->
+      <div class="card">
+        <p class="section-label">Watermark Type</p>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="text">Text</button>
+          <button class="tab-btn"        data-tab="image">Image / Logo</button>
+        </div>
 
-    <!-- Watermark type -->
-    <div class="card">
-      <p class="section-label">Watermark Type</p>
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="text">Text</button>
-        <button class="tab-btn"        data-tab="image">Image / Logo</button>
+        <!-- Text panel -->
+        <div class="tab-panel active" id="panel-text">
+          <label for="wm-text">Text</label>
+          <input type="text" id="wm-text" value="© My Watermark" />
+
+          <label for="wm-font">Font</label>
+          <select id="wm-font">
+            <option>Arial</option>
+            <option>Georgia</option>
+            <option>Impact</option>
+            <option>Courier New</option>
+            <option>Times New Roman</option>
+            <option>Verdana</option>
+            <option>Trebuchet MS</option>
+          </select>
+
+          <div class="row2">
+            <div>
+              <label for="wm-size">Size (px)</label>
+              <input type="number" id="wm-size" value="48" min="8" max="400" />
+            </div>
+            <div>
+              <label for="wm-style">Style</label>
+              <select id="wm-style">
+                <option value="">Normal</option>
+                <option value="bold">Bold</option>
+                <option value="italic">Italic</option>
+                <option value="bold italic">Bold Italic</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="wm-color">Color</label>
+          <div class="color-row">
+            <input type="color" id="wm-color" value="#ffffff" />
+            <input type="text" id="wm-color-hex" value="#ffffff" maxlength="9" />
+          </div>
+        </div>
+
+        <!-- Image/Logo panel -->
+        <div class="tab-panel" id="panel-image">
+          <div id="wm-img-drop">
+            <svg role="img" aria-label="Upload watermark image" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p>Click to select logo / image</p>
+            <input type="file" id="wm-img-input" accept="image/*" />
+            <img id="wm-img-preview" alt="Watermark preview" />
+          </div>
+
+          <label for="wm-img-scale">Scale</label>
+          <div class="range-row">
+            <input type="range" id="wm-img-scale" min="5" max="100" value="25" />
+            <span id="wm-img-scale-val">25%</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Text panel -->
-      <div class="tab-panel active" id="panel-text">
-        <label for="wm-text">Text</label>
-        <input type="text" id="wm-text" value="© My Watermark" />
+      <!-- Position & style card -->
+      <div class="card">
+        <p class="section-label">Position &amp; Style</p>
 
-        <label for="wm-font">Font</label>
-        <select id="wm-font">
-          <option>Arial</option>
-          <option>Georgia</option>
-          <option>Impact</option>
-          <option>Courier New</option>
-          <option>Times New Roman</option>
-          <option>Verdana</option>
-          <option>Trebuchet MS</option>
+        <label for="wm-position">Position</label>
+        <select id="wm-position">
+          <option value="bottom-right">Bottom Right</option>
+          <option value="bottom-left">Bottom Left</option>
+          <option value="top-right">Top Right</option>
+          <option value="top-left">Top Left</option>
+          <option value="center">Center</option>
+          <option value="tile">Tile (repeat)</option>
+          <option value="free">Free (drag on image)</option>
         </select>
 
-        <div class="row2">
-          <div>
-            <label for="wm-size">Size (px)</label>
-            <input type="number" id="wm-size" value="48" min="8" max="400" />
-          </div>
-          <div>
-            <label for="wm-style">Style</label>
-            <select id="wm-style">
-              <option value="">Normal</option>
-              <option value="bold">Bold</option>
-              <option value="italic">Italic</option>
-              <option value="bold italic">Bold Italic</option>
-            </select>
-          </div>
+        <!-- Hint shown only in free mode -->
+        <div id="free-hint">
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Tap or drag on the image above to place the watermark
         </div>
 
-        <label for="wm-color">Color</label>
-        <div class="color-row">
-          <input type="color" id="wm-color" value="#ffffff" />
-          <input type="text" id="wm-color-hex" value="#ffffff" maxlength="9" />
-        </div>
-      </div>
-
-      <!-- Image panel -->
-      <div class="tab-panel" id="panel-image">
-        <div id="wm-img-drop">
-          <svg role="img" aria-label="Upload watermark image" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-          <p>Click to select logo / image</p>
-          <input type="file" id="wm-img-input" accept="image/*" />
-          <img id="wm-img-preview" alt="Watermark preview" />
-        </div>
-
-        <label for="wm-img-scale">Scale</label>
+        <label for="wm-opacity">Opacity</label>
         <div class="range-row">
-          <input type="range" id="wm-img-scale" min="5" max="100" value="25" />
-          <span id="wm-img-scale-val">25%</span>
+          <input type="range" id="wm-opacity" min="5" max="100" value="60" />
+          <span id="wm-opacity-val">60%</span>
+        </div>
+
+        <label for="wm-rotate">Rotation</label>
+        <div class="range-row">
+          <input type="range" id="wm-rotate" min="-180" max="180" value="-30" />
+          <span id="wm-rotate-val">-30°</span>
+        </div>
+
+        <div id="margin-row">
+          <label for="wm-margin">Margin (px)</label>
+          <input type="number" id="wm-margin" value="20" min="0" max="500" />
         </div>
       </div>
-    </div>
 
-    <!-- Position & style -->
-    <div class="card">
-      <p class="section-label">Position &amp; Style</p>
-
-      <label for="wm-position">Position</label>
-      <select id="wm-position">
-        <option value="bottom-right">Bottom Right</option>
-        <option value="bottom-left">Bottom Left</option>
-        <option value="top-right">Top Right</option>
-        <option value="top-left">Top Left</option>
-        <option value="center">Center</option>
-        <option value="tile">Tile (repeat)</option>
-      </select>
-
-      <label for="wm-opacity">Opacity</label>
-      <div class="range-row">
-        <input type="range" id="wm-opacity" min="5" max="100" value="60" />
-        <span id="wm-opacity-val">60%</span>
+      <!-- Actions -->
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-apply" disabled>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Apply Watermark
+        </button>
+        <button class="btn btn-success" id="btn-download" disabled>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span id="download-label">Download</span>
+        </button>
+        <button class="btn btn-ghost" id="btn-reset">
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
+          Reset
+        </button>
       </div>
 
-      <label for="wm-rotate">Rotation</label>
-      <div class="range-row">
-        <input type="range" id="wm-rotate" min="-180" max="180" value="-30" />
-        <span id="wm-rotate-val">-30°</span>
+    </div>
+    <!-- /#single-panel -->
+
+    <!-- ── Batch-mode controls ───────────────────────────────────────────── -->
+    <div id="batch-panel">
+
+      <div>
+        <p class="section-label">Images</p>
+        <div class="drop-zone" id="batch-drop" style="padding:1.2rem 1rem">
+          <svg role="img" aria-label="Upload multiple images" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+          <p>Drag &amp; drop or <strong>click to select</strong></p>
+          <p class="hint">Select multiple images</p>
+          <input type="file" id="batch-input" accept="image/*" multiple />
+        </div>
+        <div class="batch-list" id="batch-list">
+          <div style="padding:.65rem;text-align:center;color:var(--text-muted);font-size:.78rem">No images selected yet</div>
+        </div>
       </div>
 
-      <label for="wm-margin">Margin (px)</label>
-      <input type="number" id="wm-margin" value="20" min="0" max="500" />
-    </div>
+      <!-- Watermark type card (same as single — reused controls) -->
+      <div class="card">
+        <p class="section-label">Watermark Type</p>
+        <p style="font-size:.78rem;color:var(--text-muted)">Uses the same watermark settings configured above.</p>
+      </div>
 
-    <!-- Actions -->
-    <div class="btn-group">
-      <button class="btn btn-primary" id="btn-apply" disabled>
-        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        Apply Watermark
-      </button>
-      <button class="btn btn-success" id="btn-download" disabled>
-        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Download PNG
-      </button>
-      <button class="btn btn-primary" id="btn-batch" disabled>
-        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Download ZIP
-      </button>
-      <div id="progress-wrap"><div id="progress-bar"></div></div>
-      <button class="btn btn-ghost" id="btn-reset">
-        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
-        Reset
-      </button>
+      <!-- Actions -->
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btn-batch" disabled>
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Download ZIP
+        </button>
+        <div id="progress-wrap"><div id="progress-bar"></div></div>
+      </div>
+
     </div>
+    <!-- /#batch-panel -->
 
   </aside>
 
-  <!-- ── Canvas area ──────────────────────────────────────────────────────── -->
-  <section class="canvas-area">
-    <div class="empty-state" id="empty-state">
-      <svg role="img" aria-label="No image loaded" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <circle cx="8.5" cy="8.5" r="1.5"/>
-        <polyline points="21 15 16 10 5 21"/>
-      </svg>
-      <p>Load an image to get started</p>
-    </div>
-    <canvas id="canvas"></canvas>
-  </section>
 </div><!-- /.app-layout -->
 </div><!-- /#page-home -->
 
+<!-- ── About page ────────────────────────────────────────────────────────── -->
 <div id="page-about" class="page">
   <main class="info-page">
     <h2>About Mark Your Picture</h2>
@@ -970,20 +985,21 @@
 
     <div class="card">
       <h3>✏️ What you can do</h3>
-      <p>Add custom text or logo watermarks with full control over position, opacity, rotation, font, and size. Process a single image or an entire batch at once — the batch mode packages all watermarked results into a ZIP file ready for download.</p>
+      <p>Add custom text or logo watermarks with full control over position (including free drag), opacity, rotation, font, and size. Process a single image or an entire batch at once — the batch mode packages all watermarked results into a ZIP file ready for download. The original image format (JPG, PNG, WebP) is preserved.</p>
     </div>
 
     <div class="card">
       <h3>Open Source</h3>
-      <p>Mark Your Picture is free and open-source. You can inspect the code, contribute improvements, or self-host it on your own infrastructure. Transparency is a core value — you should always be able to verify that no data is being sent anywhere.</p>
+      <p>Mark Your Picture is free and open-source. You can inspect the code, contribute improvements, or self-host it on your own infrastructure.</p>
       <a href="https://github.com/el-j/mark-your-picture" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top:0.75rem;text-decoration:none;display:inline-flex;width:auto">
-        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
         View on GitHub
       </a>
     </div>
   </main>
 </div><!-- /#page-about -->
 
+<!-- ── Imprint page ──────────────────────────────────────────────────────── -->
 <div id="page-imprint" class="page">
   <main class="info-page">
     <h2>Imprint</h2>
@@ -1002,12 +1018,12 @@
     <div class="card">
       <p class="section-label">Source Code</p>
       <p style="margin-bottom:0.5rem">The full source code is publicly available under an open-source license:</p>
-      <a href="https://github.com/el-j/mark-your-picture" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-size:0.88rem;word-break:break-all">github.com/el-j/mark-your-picture</a>
+      <a href="https://github.com/el-j/mark-your-picture" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-size:0.85rem;word-break:break-all">github.com/el-j/mark-your-picture</a>
     </div>
 
     <div class="card">
       <p class="section-label">Privacy</p>
-      <p>No personal data is collected by this application. All image processing is performed locally in your browser using the HTML5 Canvas API. No cookies are set, no analytics are run, and no files are transmitted to any server. The hosting provider (GitHub Pages / Cloudflare Pages or similar) may collect standard web server logs (IP address, request time, user-agent) as part of normal infrastructure operation — please refer to their respective privacy policies for details.</p>
+      <p>No personal data is collected by this application. All image processing is performed locally in your browser using the HTML5 Canvas API. No cookies are set, no analytics are run, and no files are transmitted to any server. The hosting provider may collect standard web server logs (IP address, request time, user-agent) as part of normal infrastructure operation.</p>
     </div>
   </main>
 </div><!-- /#page-imprint -->
@@ -1016,7 +1032,7 @@
 
 <!-- PWA install banner -->
 <div id="install-banner" role="complementary" aria-label="Install app">
-  <img class="install-icon" src="./icons/icon-72x72.png" width="44" height="44" alt="App icon" />
+  <img class="install-icon" src="./icons/icon-72x72.png" width="40" height="40" alt="App icon" />
   <div class="install-text">
     <strong>Install Mark Your Picture</strong>
     <span>Works offline · fast · no uploads</span>

@@ -18,74 +18,67 @@ const mobileNav = document.querySelector('.main-nav-mobile');
 const overlay = document.querySelector('.menu-overlay');
 const navLinks = document.querySelectorAll('.nav-link');
 
-// Function to toggle the menu open/closed state
 const toggleMenu = () => {
   const isMenuOpen = mobileNav?.classList.contains('is-open');
-
   if (isMenuOpen) {
-    // Close Menu
     mobileNav?.classList.remove('is-open');
     hamburgerBtn?.classList.remove('is-active');
     overlay?.classList.remove('is-visible');
     hamburgerBtn?.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = ''; // Restore scrolling
+    document.body.style.overflow = '';
   } else {
-    // Open Menu
     mobileNav?.classList.add('is-open');
     hamburgerBtn?.classList.add('is-active');
     overlay?.classList.add('is-visible');
     hamburgerBtn?.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
   }
 };
 
-// Event listener for the hamburger button
 hamburgerBtn?.addEventListener('click', toggleMenu);
-
-// Event listener to close the menu when clicking on the dark overlay
 overlay?.addEventListener('click', toggleMenu);
-
-// Event listener to close the menu when a link is clicked
 navLinks.forEach((link) => {
   link.addEventListener('click', function () {
-    // Optional: Handle active state switching visually for demonstration
     navLinks.forEach((l) => l.classList.remove('active'));
     link.classList.add('active');
-
-    if (mobileNav?.classList.contains('is-open')) {
-      toggleMenu();
-    }
+    if (mobileNav?.classList.contains('is-open')) toggleMenu();
   });
 });
+
 // ── State ─────────────────────────────────────────────────────────────────────
 
 let sourceImg: HTMLImageElement | null = null;
+let sourceFile: File | null = null;
 let wmImg: HTMLImageElement | null = null;
 let batchFiles: File[] = [];
 let activeTab: 'text' | 'image' = 'text';
 let activeMode: 'single' | 'batch' = 'single';
 
+/** Free-placement position as fractions of image dimensions (0–1). */
+let freeX = 0.5;
+let freeY = 0.5;
+let isDragging = false;
+
 // ── Element refs ──────────────────────────────────────────────────────────────
 
-const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-const emptyState = document.getElementById('empty-state') as HTMLElement;
-const dropZone = document.getElementById('drop-zone') as HTMLElement;
-const fileInput = document.getElementById('file-input') as HTMLInputElement;
-const batchInput = document.getElementById('batch-input') as HTMLInputElement;
-const wmImgDrop = document.getElementById('wm-img-drop') as HTMLElement;
-const wmImgInput = document.getElementById('wm-img-input') as HTMLInputElement;
-const wmImgPreview = document.getElementById(
-  'wm-img-preview',
-) as HTMLImageElement;
-const batchList = document.getElementById('batch-list') as HTMLElement;
-const progressBar = document.getElementById('progress-bar') as HTMLElement;
-const progressWrap = document.getElementById('progress-wrap') as HTMLElement;
-const btnApply = document.getElementById('btn-apply') as HTMLButtonElement;
-const btnDownload = document.getElementById(
-  'btn-download',
-) as HTMLButtonElement;
-const btnBatch = document.getElementById('btn-batch') as HTMLButtonElement;
-const btnReset = document.getElementById('btn-reset') as HTMLButtonElement;
+const canvas        = document.getElementById('canvas') as HTMLCanvasElement;
+const dropZone      = document.getElementById('drop-zone') as HTMLElement;
+const fileInput     = document.getElementById('file-input') as HTMLInputElement;
+const batchInput    = document.getElementById('batch-input') as HTMLInputElement;
+const wmImgDrop     = document.getElementById('wm-img-drop') as HTMLElement;
+const wmImgInput    = document.getElementById('wm-img-input') as HTMLInputElement;
+const wmImgPreview  = document.getElementById('wm-img-preview') as HTMLImageElement;
+const batchList     = document.getElementById('batch-list') as HTMLElement;
+const progressBar   = document.getElementById('progress-bar') as HTMLElement;
+const progressWrap  = document.getElementById('progress-wrap') as HTMLElement;
+const btnApply      = document.getElementById('btn-apply') as HTMLButtonElement;
+const btnDownload   = document.getElementById('btn-download') as HTMLButtonElement;
+const btnShare      = document.getElementById('btn-share') as HTMLButtonElement | null;
+const btnBatch      = document.getElementById('btn-batch') as HTMLButtonElement;
+const btnReset      = document.getElementById('btn-reset') as HTMLButtonElement;
+const positionSel   = document.getElementById('wm-position') as HTMLSelectElement;
+const marginRow     = document.getElementById('margin-row') as HTMLElement;
+const freeHint      = document.getElementById('free-hint') as HTMLElement | null;
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 
@@ -101,46 +94,74 @@ function toast(msg: string, duration = 2500): void {
 function val(id: string): string {
   return (document.getElementById(id) as HTMLInputElement).value;
 }
-
 function num(id: string): number {
   return Number(val(id));
 }
 
+/** Return the best canvas-output MIME type for the given source type. */
+function resolveOutputMime(sourceMime?: string): string {
+  const supported = ['image/jpeg', 'image/png', 'image/webp'];
+  if (sourceMime && supported.includes(sourceMime)) return sourceMime;
+  return 'image/png';
+}
+
+function mimeToExt(mime: string): string {
+  const map: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png':  'png',
+    'image/webp': 'webp',
+  };
+  return map[mime] ?? 'png';
+}
+
+function outputFilename(originalName: string, ext: string): string {
+  const base = originalName.replace(/\.[^/.]+$/, '');
+  return `${base}_watermarked.${ext}`;
+}
+
+function updateDownloadLabel(): void {
+  const mime = resolveOutputMime(sourceFile?.type);
+  const ext  = mimeToExt(mime).toUpperCase();
+  const dlLabel = document.getElementById('download-label');
+  if (dlLabel) dlLabel.textContent = `Download ${ext}`;
+}
+
 function getRenderOpts(): RenderOptions {
   const position = val('wm-position') as WatermarkPosition;
-  const opacity = num('wm-opacity');
+  const opacity  = num('wm-opacity');
   const rotation = num('wm-rotate');
-  const margin = num('wm-margin');
+  const margin   = num('wm-margin');
+
+  const base = { position, opacity, rotation, margin, freeX, freeY };
 
   if (activeTab === 'image') {
-    return {
-      watermark: {
-        type: 'image',
-        image: wmImg ?? new Image(),
-        scale: num('wm-img-scale'),
-      },
-      position,
-      opacity,
-      rotation,
-      margin,
-    };
+    return { ...base, watermark: { type: 'image', image: wmImg ?? new Image(), scale: num('wm-img-scale') } };
   }
 
   return {
+    ...base,
     watermark: {
-      type: 'text',
-      text: val('wm-text'),
-      font: val('wm-font'),
-      size: num('wm-size'),
+      type:  'text',
+      text:  val('wm-text'),
+      font:  val('wm-font'),
+      size:  num('wm-size'),
       style: val('wm-style'),
       color: val('wm-color-hex') || '#ffffff',
     },
-    position,
-    opacity,
-    rotation,
-    margin,
   };
 }
+
+// ── Position selector side-effects ────────────────────────────────────────────
+
+function onPositionChange(): void {
+  const isFree = positionSel.value === 'free';
+  if (marginRow)  marginRow.style.display = isFree ? 'none' : '';
+  if (freeHint)   freeHint.style.display  = isFree ? 'flex' : 'none';
+  canvas.classList.toggle('free-mode', isFree);
+  if (sourceImg)  applyWatermark();
+}
+
+positionSel.addEventListener('change', onPositionChange);
 
 // ── Image upload (single) ────────────────────────────────────────────────────
 
@@ -150,10 +171,7 @@ fileInput.addEventListener('change', (e) => {
   if (file) loadSource(file);
 });
 
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('over');
-});
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
 dropZone.addEventListener('drop', (e) => {
   e.preventDefault();
@@ -162,13 +180,27 @@ dropZone.addEventListener('drop', (e) => {
   if (file?.type.startsWith('image/')) loadSource(file);
 });
 
+// Allow dropping a new image onto the canvas area too
+canvas.addEventListener('dragover', (e) => { e.preventDefault(); });
+canvas.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const file = e.dataTransfer?.files[0];
+  if (file?.type.startsWith('image/')) loadSource(file);
+});
+
 function loadSource(file: File): void {
   loadImageFile(file)
     .then((img) => {
-      sourceImg = img;
-      emptyState.style.display = 'none';
-      canvas.style.display = 'block';
-      btnApply.disabled = false;
+      sourceImg  = img;
+      sourceFile = file;
+      // Reset free position to center when new image loads
+      freeX = 0.5;
+      freeY = 0.5;
+
+      dropZone.style.display    = 'none';
+      canvas.style.display      = 'block';
+      btnApply.disabled         = false;
+      updateDownloadLabel();
       renderWatermark(canvas, img, getRenderOpts());
       toast('Image loaded ✓');
     })
@@ -184,20 +216,12 @@ batchInput.addEventListener('change', (e) => {
   const files = Array.from((e.target as HTMLInputElement).files ?? []);
   if (files.length) loadBatchFiles(files);
 });
-
-batchDrop.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  batchDrop.classList.add('over');
-});
-batchDrop.addEventListener('dragleave', () =>
-  batchDrop.classList.remove('over'),
-);
+batchDrop.addEventListener('dragover', (e) => { e.preventDefault(); batchDrop.classList.add('over'); });
+batchDrop.addEventListener('dragleave', () => batchDrop.classList.remove('over'));
 batchDrop.addEventListener('drop', (e) => {
   e.preventDefault();
   batchDrop.classList.remove('over');
-  const files = Array.from(e.dataTransfer?.files ?? []).filter((f) =>
-    f.type.startsWith('image/'),
-  );
+  const files = Array.from(e.dataTransfer?.files ?? []).filter((f) => f.type.startsWith('image/'));
   if (files.length) loadBatchFiles(files);
 });
 
@@ -207,10 +231,7 @@ function loadBatchFiles(files: File[]): void {
   files.forEach((file, i) => {
     const row = document.createElement('div');
     row.className = 'batch-item';
-    row.innerHTML = `
-      <span class="batch-name">${file.name}</span>
-      <span class="batch-status pending" id="bs-${i}">Waiting</span>
-    `;
+    row.innerHTML = `<span class="batch-name">${file.name}</span><span class="batch-status pending" id="bs-${i}">Waiting</span>`;
     batchList.appendChild(row);
   });
   btnBatch.disabled = false;
@@ -229,7 +250,7 @@ function loadWmImage(file: File): void {
   loadImageFile(file)
     .then((img) => {
       wmImg = img;
-      wmImgPreview.src = img.src;
+      wmImgPreview.src          = img.src;
       wmImgPreview.style.display = 'block';
       toast('Watermark image loaded ✓');
       if (sourceImg) applyWatermark();
@@ -241,12 +262,8 @@ function loadWmImage(file: File): void {
 
 document.querySelectorAll<HTMLElement>('.tab-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
-    document
-      .querySelectorAll('.tab-btn')
-      .forEach((b) => b.classList.remove('active'));
-    document
-      .querySelectorAll('.tab-panel')
-      .forEach((p) => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
     btn.classList.add('active');
     activeTab = btn.dataset['tab'] as 'text' | 'image';
     document.getElementById(`panel-${activeTab}`)?.classList.add('active');
@@ -256,40 +273,32 @@ document.querySelectorAll<HTMLElement>('.tab-btn').forEach((btn) => {
 
 // ── Mode tabs (single / batch) ───────────────────────────────────────────────
 
-document.querySelectorAll<HTMLElement>('.mode-btn').forEach((btn) => {
+document.querySelectorAll<HTMLElement>('.seg-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
-    document
-      .querySelectorAll('.mode-btn')
-      .forEach((b) => b.classList.remove('active'));
+    document.querySelectorAll('.seg-btn').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     activeMode = btn.dataset['mode'] as 'single' | 'batch';
-    document
-      .getElementById('single-panel')
-      ?.classList.toggle('active', activeMode === 'single');
-    document
-      .getElementById('batch-panel')
-      ?.classList.toggle('active', activeMode === 'batch');
+    document.getElementById('single-panel')?.classList.toggle('active', activeMode === 'single');
+    document.getElementById('batch-panel')?.classList.toggle('active', activeMode === 'batch');
   });
 });
 
 // ── Range labels ─────────────────────────────────────────────────────────────
 
 function syncRange(id: string, displayId: string, suffix: string): void {
-  const el = document.getElementById(id) as HTMLInputElement;
+  const el  = document.getElementById(id) as HTMLInputElement;
   const out = document.getElementById(displayId) as HTMLElement;
-  el.addEventListener('input', () => {
-    out.textContent = el.value + suffix;
-  });
+  el.addEventListener('input', () => { out.textContent = el.value + suffix; });
 }
 
-syncRange('wm-opacity', 'wm-opacity-val', '%');
-syncRange('wm-rotate', 'wm-rotate-val', '°');
+syncRange('wm-opacity',   'wm-opacity-val',   '%');
+syncRange('wm-rotate',    'wm-rotate-val',    '°');
 syncRange('wm-img-scale', 'wm-img-scale-val', '%');
 
 // ── Color sync ────────────────────────────────────────────────────────────────
 
-const colorPicker = document.getElementById('wm-color') as HTMLInputElement;
-const colorHex = document.getElementById('wm-color-hex') as HTMLInputElement;
+const colorPicker = document.getElementById('wm-color')     as HTMLInputElement;
+const colorHex    = document.getElementById('wm-color-hex') as HTMLInputElement;
 
 colorPicker.addEventListener('input', () => {
   colorHex.value = colorPicker.value;
@@ -305,24 +314,15 @@ colorHex.addEventListener('input', () => {
 // ── Live preview ──────────────────────────────────────────────────────────────
 
 const liveInputIds = [
-  'wm-text',
-  'wm-font',
-  'wm-size',
-  'wm-style',
-  'wm-opacity',
-  'wm-rotate',
-  'wm-position',
-  'wm-margin',
-  'wm-img-scale',
+  'wm-text', 'wm-font', 'wm-size', 'wm-style',
+  'wm-opacity', 'wm-rotate', 'wm-margin', 'wm-img-scale',
 ];
 
 liveInputIds.forEach((id) => {
   const el = document.getElementById(id);
   if (!el) return;
   const event = (el as HTMLInputElement).type === 'range' ? 'input' : 'change';
-  el.addEventListener(event, () => {
-    if (sourceImg) applyWatermark();
-  });
+  el.addEventListener(event, () => { if (sourceImg) applyWatermark(); });
 });
 
 // ── Apply / Download / Reset ──────────────────────────────────────────────────
@@ -333,27 +333,105 @@ function applyWatermark(): void {
   if (!sourceImg) return;
   renderWatermark(canvas, sourceImg, getRenderOpts());
   btnDownload.disabled = false;
-  toast('Watermark applied ✓');
+  if (btnShare) btnShare.disabled = false;
 }
 
-btnDownload.addEventListener('click', () => {
+// ── Download / Share ──────────────────────────────────────────────────────────
+
+async function downloadOrShare(forceDownload = false): Promise<void> {
+  if (!sourceImg) return;
+
+  const mime     = resolveOutputMime(sourceFile?.type);
+  const ext      = mimeToExt(mime);
+  const filename = outputFilename(sourceFile?.name ?? 'watermarked', ext);
+  const quality  = mime === 'image/jpeg' ? 0.92 : undefined;
+
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (b) => (b ? resolve(b) : reject(new Error('toBlob failed'))),
+      mime,
+      quality,
+    );
+  });
+
+  const file = new File([blob], filename, { type: mime });
+
+  // Try Web Share API (available on mobile and some desktop browsers)
+  if (!forceDownload && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: 'Watermarked Image' });
+      toast('Shared ✓');
+      return;
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') return; // user cancelled
+      // share failed – fall through to download
+    }
+  }
+
+  const url  = URL.createObjectURL(blob);
   const link = document.createElement('a');
-  link.download = 'watermarked.png';
-  link.href = canvas.toDataURL('image/png');
+  link.href     = url;
+  link.download = filename;
   link.click();
+  URL.revokeObjectURL(url);
   toast('Download started ✓');
-});
+}
+
+btnDownload.addEventListener('click', () => downloadOrShare());
+btnShare?.addEventListener('click', () => downloadOrShare(false));
 
 btnReset.addEventListener('click', () => {
   if (!sourceImg) return;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  canvas.width = sourceImg.naturalWidth;
+  canvas.width  = sourceImg.naturalWidth;
   canvas.height = sourceImg.naturalHeight;
   ctx.drawImage(sourceImg, 0, 0);
   btnDownload.disabled = true;
+  if (btnShare) btnShare.disabled = true;
   toast('Reset to original ✓');
 });
+
+// ── Free-placement drag on canvas ─────────────────────────────────────────────
+
+function canvasCoords(e: MouseEvent | Touch): [number, number] {
+  const rect   = canvas.getBoundingClientRect();
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return [
+    ((e.clientX - rect.left) * scaleX) / canvas.width,
+    ((e.clientY - rect.top)  * scaleY) / canvas.height,
+  ];
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  if (positionSel.value !== 'free') return;
+  isDragging = true;
+  [freeX, freeY] = canvasCoords(e);
+  applyWatermark();
+});
+canvas.addEventListener('mousemove', (e) => {
+  if (!isDragging || positionSel.value !== 'free') return;
+  [freeX, freeY] = canvasCoords(e);
+  applyWatermark();
+});
+canvas.addEventListener('mouseup',   () => { isDragging = false; });
+canvas.addEventListener('mouseleave', () => { isDragging = false; });
+
+canvas.addEventListener('touchstart', (e) => {
+  if (positionSel.value !== 'free') return;
+  e.preventDefault();
+  isDragging = true;
+  [freeX, freeY] = canvasCoords(e.touches[0]);
+  applyWatermark();
+}, { passive: false });
+canvas.addEventListener('touchmove', (e) => {
+  if (!isDragging || positionSel.value !== 'free') return;
+  e.preventDefault();
+  [freeX, freeY] = canvasCoords(e.touches[0]);
+  applyWatermark();
+}, { passive: false });
+canvas.addEventListener('touchend', () => { isDragging = false; });
 
 // ── Batch processing ──────────────────────────────────────────────────────────
 
@@ -364,41 +442,19 @@ btnBatch.addEventListener('click', async () => {
     return;
   }
 
-  btnBatch.disabled = true;
+  btnBatch.disabled         = true;
   progressWrap.style.display = 'block';
-  progressBar.style.width = '0%';
+  progressBar.style.width   = '0%';
 
   await processBatch(batchFiles, getRenderOpts(), {
-    onFileStart: (i) => {
-      const el = document.getElementById(`bs-${i}`);
-      if (el) {
-        el.textContent = 'Processing…';
-        el.className = 'batch-status processing';
-      }
-    },
-    onFileComplete: (i) => {
-      const el = document.getElementById(`bs-${i}`);
-      if (el) {
-        el.textContent = 'Done ✓';
-        el.className = 'batch-status done';
-      }
-    },
-    onFileError: (i) => {
-      const el = document.getElementById(`bs-${i}`);
-      if (el) {
-        el.textContent = 'Error ✗';
-        el.className = 'batch-status error';
-      }
-    },
-    onProgress: (pct) => {
-      progressBar.style.width = `${pct}%`;
-    },
+    onFileStart:    (i)   => { const el = document.getElementById(`bs-${i}`); if (el) { el.textContent = 'Processing…'; el.className = 'batch-status processing'; } },
+    onFileComplete: (i)   => { const el = document.getElementById(`bs-${i}`); if (el) { el.textContent = 'Done ✓';       el.className = 'batch-status done';       } },
+    onFileError:    (i)   => { const el = document.getElementById(`bs-${i}`); if (el) { el.textContent = 'Error ✗';      el.className = 'batch-status error';       } },
+    onProgress:     (pct) => { progressBar.style.width = `${pct}%`; },
     onDone: () => {
       btnBatch.disabled = false;
       toast('ZIP downloaded ✓', 3500);
-      setTimeout(() => {
-        progressWrap.style.display = 'none';
-      }, 3000);
+      setTimeout(() => { progressWrap.style.display = 'none'; }, 3000);
     },
   });
 });
@@ -407,27 +463,20 @@ btnBatch.addEventListener('click', async () => {
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
+  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
   prompt(): Promise<void>;
 }
 
 let deferredInstallPrompt: BeforeInstallPromptEvent | null = null;
 
 const installBanner = document.getElementById('install-banner') as HTMLElement;
-const btnInstall = document.getElementById('btn-install') as HTMLButtonElement;
-const btnDismiss = document.getElementById('btn-dismiss') as HTMLButtonElement;
+const btnInstall    = document.getElementById('btn-install')    as HTMLButtonElement;
+const btnDismiss    = document.getElementById('btn-dismiss')    as HTMLButtonElement;
 
-// Capture the browser's install prompt event
 window.addEventListener('beforeinstallprompt', (e: Event) => {
   e.preventDefault();
   deferredInstallPrompt = e as BeforeInstallPromptEvent;
-
-  // Only show the banner if user hasn't permanently dismissed it
   if (sessionStorage.getItem('pwa-dismissed') !== '1') {
-    // Small delay so it doesn't pop up before the user has seen the app
     setTimeout(() => installBanner.classList.add('visible'), 3000);
   }
 });
@@ -446,9 +495,9 @@ btnDismiss.addEventListener('click', () => {
   sessionStorage.setItem('pwa-dismissed', '1');
 });
 
-// Hide banner once the app is successfully installed
 window.addEventListener('appinstalled', () => {
   installBanner.classList.remove('visible');
   deferredInstallPrompt = null;
-  toast('App installed! You can now launch it from your home screen ✓', 4000);
+  toast('App installed! Launch it from your home screen ✓', 4000);
 });
+
