@@ -12,7 +12,7 @@ function LangSwitcher() {
       value={lang}
       onChange={(e) => setLang(e.target.value as Lang)}
       aria-label={t('header.langSwitcher')}
-      className="shrink-0 px-2 py-1 text-[0.72rem] font-bold uppercase
+      className="w-auto shrink-0 px-2 py-1 text-[0.72rem] font-bold uppercase
                  rounded-[var(--radius-sm)] border border-[var(--border)]
                  bg-transparent text-[var(--text-muted)]
                  cursor-pointer transition-all duration-[var(--transition)]
