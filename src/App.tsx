@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { WatermarkProvider } from './contexts/WatermarkContext';
 import { ToastProvider } from './hooks/useToast';
@@ -14,7 +14,7 @@ export default function App() {
     <ThemeProvider>
       <ToastProvider>
         <WatermarkProvider>
-          <BrowserRouter>
+          <HashRouter>
             <Header />
             <Routes>
               <Route path="/" element={<ToolPage />} />
@@ -23,7 +23,7 @@ export default function App() {
             </Routes>
             <Toast />
             <InstallBanner />
-          </BrowserRouter>
+          </HashRouter>
         </WatermarkProvider>
       </ToastProvider>
     </ThemeProvider>
