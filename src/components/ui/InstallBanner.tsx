@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useToast } from '../../hooks/useToast';
 import { useT } from '../../i18n/index';
 
@@ -54,12 +54,18 @@ export function InstallBanner() {
           {t('install.subtitle')}
         </div>
         <div className="flex gap-2 shrink-0">
-          <button onClick={handleInstall}
-            className="py-1.5 px-3 text-[0.78rem] font-semibold bg-[var(--accent)] text-white border-none rounded-[var(--radius-sm)] cursor-pointer hover:bg-[var(--accent-hover)]">
+          <button
+            type="button"
+            onClick={handleInstall}
+            className="py-1.5 px-3 text-[0.78rem] font-semibold bg-[var(--accent)] text-white border-none rounded-[var(--radius-sm)] cursor-pointer hover:bg-[var(--accent-hover)]"
+          >
             {t('install.install')}
           </button>
-          <button onClick={handleDismiss}
-            className="py-1.5 px-2 text-[0.78rem] bg-transparent text-[var(--text-muted)] border border-[var(--border)] rounded-[var(--radius-sm)] cursor-pointer hover:text-[var(--text)]">
+          <button
+            type="button"
+            onClick={handleDismiss}
+            className="py-1.5 px-2 text-[0.78rem] bg-transparent text-[var(--text-muted)] border border-[var(--border)] rounded-[var(--radius-sm)] cursor-pointer hover:text-[var(--text)]"
+          >
             ✕
           </button>
         </div>

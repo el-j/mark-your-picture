@@ -13,9 +13,8 @@ export function Toast() {
                   rounded-full px-4.5 py-1.5 text-[0.8rem] text-[var(--text)]
                   shadow-[var(--shadow-sm)] pointer-events-none whitespace-nowrap
                   transition-transform duration-250 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-                  ${visible
-                    ? '-translate-x-1/2 translate-y-0'
-                    : '-translate-x-1/2 translate-y-16'
+                  ${
+                    visible ? '-translate-x-1/2 translate-y-0' : '-translate-x-1/2 translate-y-16'
                   }`}
     >
       {message}

@@ -22,7 +22,10 @@ export function renderWatermark(
 
   if (watermark.type === 'text') {
     const { text, font, size, style, color } = watermark;
-    if (!text) { ctx.restore(); return; }
+    if (!text) {
+      ctx.restore();
+      return;
+    }
 
     ctx.font = `${style} ${size}px ${font}`.trim();
     ctx.fillStyle = color;
@@ -99,13 +102,20 @@ function corner(
   freeY?: number,
 ): [number, number] {
   switch (position) {
-    case 'top-left':     return [margin, margin];
-    case 'top-right':    return [cw - ww - margin, margin];
-    case 'bottom-left':  return [margin, ch - wh - margin];
-    case 'bottom-right': return [cw - ww - margin, ch - wh - margin];
-    case 'center':       return [(cw - ww) / 2, (ch - wh) / 2];
-    case 'free':         return [(freeX ?? 0.5) * cw - ww / 2, (freeY ?? 0.5) * ch - wh / 2];
-    default:             return [cw - ww - margin, ch - wh - margin];
+    case 'top-left':
+      return [margin, margin];
+    case 'top-right':
+      return [cw - ww - margin, margin];
+    case 'bottom-left':
+      return [margin, ch - wh - margin];
+    case 'bottom-right':
+      return [cw - ww - margin, ch - wh - margin];
+    case 'center':
+      return [(cw - ww) / 2, (ch - wh) / 2];
+    case 'free':
+      return [(freeX ?? 0.5) * cw - ww / 2, (freeY ?? 0.5) * ch - wh / 2];
+    default:
+      return [cw - ww - margin, ch - wh - margin];
   }
 }
 

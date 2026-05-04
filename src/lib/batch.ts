@@ -1,8 +1,8 @@
 // ── Batch processing ─────────────────────────────────────────────────────────
 
 import JSZip from 'jszip';
-import { renderWatermark, loadImageFile } from './watermark';
 import type { RenderOptions } from './types';
+import { loadImageFile, renderWatermark } from './watermark';
 
 export interface BatchCallbacks {
   onFileStart: (index: number) => void;
@@ -16,7 +16,7 @@ export interface BatchCallbacks {
 function resolveOutputFormat(sourceMime: string): { mime: string; ext: string } {
   const supported: Record<string, string> = {
     'image/jpeg': 'jpg',
-    'image/png':  'png',
+    'image/png': 'png',
     'image/webp': 'webp',
   };
   if (supported[sourceMime]) return { mime: sourceMime, ext: supported[sourceMime] };
