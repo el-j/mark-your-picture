@@ -7,7 +7,7 @@ export function CanvasArea() {
 
   return (
     <section
-      className="flex-1 flex flex-col items-center justify-center relative overflow-auto min-h-[220px] max-[899px]:min-h-[260px] max-[899px]:max-h-[55vh] p-4"
+      className="flex-1 flex flex-col items-center justify-center relative overflow-auto p-4 max-[899px]:pb-[calc(64px+1rem)]"
       style={{
         background: `repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 20px 20px`,
       }}

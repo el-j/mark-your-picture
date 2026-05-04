@@ -6,7 +6,7 @@ export function WatermarkTypeCard() {
   const { state, dispatch } = useWatermark();
 
   return (
-    <div className="bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-4">
+    <>
       <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">Watermark Type</p>
       <div className="flex gap-1.5 mb-4">
         {(['text', 'image'] as const).map((tab) => (
@@ -24,6 +24,6 @@ export function WatermarkTypeCard() {
         ))}
       </div>
       {state.activeTab === 'text' ? <TextWatermarkTab /> : <ImageWatermarkTab />}
-    </div>
+    </>
   );
 }

@@ -1,11 +1,50 @@
+import { useState } from 'react';
+import { useWatermark } from '../../contexts/WatermarkContext';
 import { CanvasArea } from './CanvasArea';
 import { Sidebar } from './Sidebar';
+import { MobileToolbar, type MobilePanelType } from './MobileToolbar';
+import { BottomSheet } from '../ui/BottomSheet';
+import { ModeSelector } from './ModeSelector';
+import { WatermarkTypeCard } from './WatermarkTypeCard';
+import { PositionStyleCard } from './PositionStyleCard';
+import { ActionButtons } from './ActionButtons';
+import { BatchPanel } from './BatchPanel';
 
 export function ToolPage() {
+  const { state } = useWatermark();
+  const [activePanel, setActivePanel] = useState<MobilePanelType>(null);
+
+  const closePanel = () => setActivePanel(null);
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden min-[900px]:flex-row">
       <CanvasArea />
       <Sidebar />
+      
+      {/* Mobile Toolbar (hidden on desktop) */}
+      <MobileToolbar activePanel={activePanel} onOpenPanel={setActivePanel} />
+
+      {/* Mobile Bottom Sheets */}
+      <BottomSheet isOpen={activePanel === 'mode'} onClose={closePanel} title="Select Mode">
+        <ModeSelector />
+        {state.mode === 'batch' && (
+          <div className="mt-2">
+            <BatchPanel />
+          </div>
+        )}
+      </BottomSheet>
+
+      <BottomSheet isOpen={activePanel === 'watermark'} onClose={closePanel} title="Watermark">
+        <WatermarkTypeCard />
+      </BottomSheet>
+
+      <BottomSheet isOpen={activePanel === 'position'} onClose={closePanel} title="Position & Style">
+        <PositionStyleCard />
+      </BottomSheet>
+
+      <BottomSheet isOpen={activePanel === 'export'} onClose={closePanel} title="Actions & Export">
+        <ActionButtons />
+      </BottomSheet>
     </div>
   );
 }

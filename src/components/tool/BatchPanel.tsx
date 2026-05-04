@@ -87,8 +87,8 @@ export function BatchPanel() {
         </div>
       </div>
 
-      <div className="bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-3">
-        <p className="text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5">Watermark Type</p>
+      <div>
+        <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">Watermark Type</p>
         <p className="text-[0.78rem] text-[var(--text-muted)]">Uses the same watermark settings configured above.</p>
       </div>
 
