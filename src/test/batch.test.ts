@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-// We test the internal resolveOutputFormat logic via its observable effect on
-// processBatch by duplicating the pure mapping here, consistent with the
-// implementation in src/lib/batch.ts.
+// resolveOutputFormat is an internal (unexported) function in src/lib/batch.ts.
+// These tests document and pin its expected behaviour by mirroring the same
+// pure mapping logic. If the logic in batch.ts ever changes, update these tests
+// in sync — or export resolveOutputFormat and import it directly here.
 
 function resolveOutputFormat(sourceMime: string): { mime: string; ext: string } {
   const supported: Record<string, string> = {
