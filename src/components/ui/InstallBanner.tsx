@@ -31,7 +31,7 @@ export function InstallBanner() {
     await deferredPrompt.prompt();
     const choice = await deferredPrompt.userChoice;
     if (choice.outcome === 'accepted') {
-      toast(t('pwa.toastInstalled'));
+      toast(t('install.toastInstalled'));
     }
     setDeferredPrompt(null);
     setVisible(false);
@@ -48,13 +48,13 @@ export function InstallBanner() {
     <div className="fixed bottom-20 left-0 right-0 z-50 flex justify-center px-4 md:bottom-6">
       <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius)] py-3 px-4 shadow-[var(--shadow-lg)] max-w-sm w-full">
         <div className="flex-1 text-[0.82rem] text-[var(--text)]">
-          <strong className="block text-[var(--text)] mb-0.5">{t('pwa.title')}</strong>
-          {t('pwa.desc')}
+          <strong className="block text-[var(--text)] mb-0.5">{t('install.title')}</strong>
+          {t('install.subtitle')}
         </div>
         <div className="flex gap-2 shrink-0">
           <button onClick={handleInstall}
             className="py-1.5 px-3 text-[0.78rem] font-semibold bg-[var(--accent)] text-white border-none rounded-[var(--radius-sm)] cursor-pointer hover:bg-[var(--accent-hover)]">
-            {t('pwa.install')}
+            {t('install.install')}
           </button>
           <button onClick={handleDismiss}
             className="py-1.5 px-2 text-[0.78rem] bg-transparent text-[var(--text-muted)] border border-[var(--border)] rounded-[var(--radius-sm)] cursor-pointer hover:text-[var(--text)]">
