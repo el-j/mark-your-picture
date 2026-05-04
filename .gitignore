@@ -1,2 +1,9 @@
 node_modules
 dist
+
+# Coverage reports
+coverage/
+
+# Playwright output (reports and test artifacts — snapshots are committed)
+playwright-report/
+test-results/

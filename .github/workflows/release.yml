@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    branches: [main, beta, alpha]
 
 permissions:
   contents: write
@@ -134,7 +134,7 @@ jobs:
         with:
           # If a new release was published, semantic-release committed a version
           # bump. Fetch from the remote to get the latest package.json.
-          ref: main
+          ref: ${{ github.ref_name }}
 
       - uses: actions/setup-node@v4
         with:
@@ -144,17 +144,38 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      # ── Production deploy (main branch) ──────────────────────────────────
+      - name: Build (production)
+        if: github.ref_name == 'main'
         run: npm run build
 
       - name: Setup Pages
+        if: github.ref_name == 'main'
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
+        if: github.ref_name == 'main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
       - name: Deploy to GitHub Pages
+        if: github.ref_name == 'main'
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # ── Pre-release deploy (beta / alpha branches) ────────────────────────
+      - name: Build (pre-release channel)
+        if: github.ref_name != 'main'
+        run: npm run build
+        env:
+          VITE_BASE: /mark-your-picture/preview/${{ github.ref_name }}/
+
+      - name: Deploy to gh-pages pre-release sub-path
+        if: github.ref_name != 'main'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          destination_dir: preview/${{ github.ref_name }}
+          keep_files: true
