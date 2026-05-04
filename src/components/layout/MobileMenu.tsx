@@ -29,26 +29,26 @@ export function MobileMenu() {
       <button
         type="button"
         className={`flex min-[900px]:hidden flex-col justify-center items-center
-                    w-9 h-9 bg-transparent border border-[var(--border)]
-                    cursor-pointer z-[101] rounded-[var(--radius-sm)]
-                    transition-all duration-[var(--transition)] shrink-0 gap-1 p-0
-                    hover:bg-[var(--surface2)] hover:border-[var(--accent)]`}
+                    w-9 h-9 bg-transparent border border-(--border)
+                    cursor-pointer z-101 rounded-sm
+                    transition-all duration-(--transition) shrink-0 gap-1 p-0
+                    hover:bg-(--surface2) hover:border-(--accent)`}
         aria-label="Toggle menu"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         onClick={toggle}
       >
         <span
-          className={`w-4 h-[1.5px] bg-[var(--text-muted)] rounded-sm transition-transform duration-200
+          className={`w-4 h-[1.5px] bg-(--text-muted) rounded-sm transition-transform duration-200
                      ${isOpen ? 'translate-y-[5.5px] rotate-45' : ''}`}
         />
         <span
-          className={`w-4 h-[1.5px] bg-[var(--text-muted)] rounded-sm transition-opacity duration-200
+          className={`w-4 h-[1.5px] bg-(--text-muted) rounded-sm transition-opacity duration-200
                      ${isOpen ? 'opacity-0' : ''}`}
         />
         <span
-          className={`w-4 h-[1.5px] bg-[var(--text-muted)] rounded-sm transition-transform duration-200
-                     ${isOpen ? '-translate-y-[5.5px] -rotate-45' : ''}`}
+          className={`w-4 h-[1.5px] bg-(--text-muted) rounded-sm transition-transform duration-200
+                     ${isOpen ? 'translate-y-[-5.5px] -rotate-45' : ''}`}
         />
       </button>
 
@@ -56,7 +56,7 @@ export function MobileMenu() {
       <button
         type="button"
         aria-label="Close menu"
-        className={`fixed inset-0 bg-black/50 z-[98] transition-all duration-250 min-[900px]:hidden border-none p-0
+        className={`fixed inset-0 bg-black/50 z-98 transition-all duration-250 min-[900px]:hidden border-none p-0
                     ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
         onClick={toggle}
         tabIndex={isOpen ? 0 : -1}
@@ -65,11 +65,11 @@ export function MobileMenu() {
       {/* Drawer */}
       <nav
         id="mobile-menu"
-        className={`fixed top-0! right-0! bottom-0! w-[260px] max-w-[80%] min-[900px]:hidden
-                    bg-[var(--surface)] border-l border-[var(--border)]
-                    h-screen p-4 pt-[70px]
-                    flex flex-col gap-1.5 z-[99]
-                    transition-transform duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]
+        className={`fixed top-0! right-0! bottom-0! w-65 max-w-[80%] min-[900px]:hidden
+                    bg-(--surface) border-l border-(--border)
+                    h-dvh p-4 pt-17.5
+                    flex flex-col gap-1.5 z-99
+                    transition-transform duration-250 ease-in-out
                     shadow-[-8px_0_32px_rgba(0,0,0,0.2)]
                     ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         aria-label="Main navigation"
@@ -80,13 +80,13 @@ export function MobileMenu() {
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-2 px-3.5 py-2.5 w-full rounded-[var(--radius-sm)]
+              `flex items-center gap-2 px-3.5 py-2.5 w-full rounded-sm
                text-[0.95rem] font-medium no-underline
-               border border-transparent transition-all duration-[var(--transition)]
+               border border-transparent transition-all duration-(--transition)
                ${
                  isActive
-                   ? 'bg-[var(--accent)] text-white border-[var(--accent)]'
-                   : 'text-[var(--text-muted)] hover:bg-[var(--surface2)] hover:text-[var(--text)] hover:border-[var(--border)]'
+                   ? 'bg-(--accent) text-white border-(--accent)'
+                   : 'text-(--text-muted) hover:bg-(--surface2) hover:text-(--text) hover:border-(--border)'
                }`
             }
           >
