@@ -1,9 +1,10 @@
 import { NavLink } from 'react-router-dom';
+import { useT } from '../../i18n/index';
 
 const navItems = [
   {
     to: '/',
-    label: 'Tool',
+    labelKey: 'nav.tool',
     icon: (
       <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -14,7 +15,7 @@ const navItems = [
   },
   {
     to: '/about',
-    label: 'About',
+    labelKey: 'nav.about',
     icon: (
       <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -25,7 +26,7 @@ const navItems = [
   },
   {
     to: '/imprint',
-    label: 'Imprint',
+    labelKey: 'nav.imprint',
     icon: (
       <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
@@ -36,6 +37,7 @@ const navItems = [
 ];
 
 export function DesktopNav() {
+  const t = useT();
   return (
     <nav className="hidden min-[900px]:flex items-center gap-1 shrink-0" aria-label="Main navigation">
       {navItems.map((item) => (
@@ -54,7 +56,7 @@ export function DesktopNav() {
           }
         >
           {item.icon}
-          {item.label}
+          {t(item.labelKey)}
         </NavLink>
       ))}
     </nav>

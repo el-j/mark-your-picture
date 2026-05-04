@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import { I18nProvider } from './i18n/index';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { WatermarkProvider } from './contexts/WatermarkContext';
 import { ToastProvider } from './hooks/useToast';
@@ -11,21 +12,23 @@ import { InstallBanner } from './components/ui/InstallBanner';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <WatermarkProvider>
-          <BrowserRouter>
-            <Header />
-            <Routes>
-              <Route path="/" element={<ToolPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/imprint" element={<ImprintPage />} />
-            </Routes>
-            <Toast />
-            <InstallBanner />
-          </BrowserRouter>
-        </WatermarkProvider>
-      </ToastProvider>
-    </ThemeProvider>
+    <I18nProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <WatermarkProvider>
+            <HashRouter>
+              <Header />
+              <Routes>
+                <Route path="/" element={<ToolPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/imprint" element={<ImprintPage />} />
+              </Routes>
+              <Toast />
+              <InstallBanner />
+            </HashRouter>
+          </WatermarkProvider>
+        </ToastProvider>
+      </ThemeProvider>
+    </I18nProvider>
   );
 }

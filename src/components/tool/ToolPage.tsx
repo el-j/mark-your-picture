@@ -9,9 +9,11 @@ import { WatermarkTypeCard } from './WatermarkTypeCard';
 import { PositionStyleCard } from './PositionStyleCard';
 import { ActionButtons } from './ActionButtons';
 import { BatchPanel } from './BatchPanel';
+import { useT } from '../../i18n/index';
 
 export function ToolPage() {
   const { state } = useWatermark();
+  const t = useT();
   const [activePanel, setActivePanel] = useState<MobilePanelType>(null);
 
   const closePanel = () => setActivePanel(null);
@@ -25,7 +27,7 @@ export function ToolPage() {
       <MobileToolbar activePanel={activePanel} onOpenPanel={setActivePanel} />
 
       {/* Mobile Bottom Sheets */}
-      <BottomSheet isOpen={activePanel === 'mode'} onClose={closePanel} title="Select Mode">
+      <BottomSheet isOpen={activePanel === 'mode'} onClose={closePanel} title={t('bottomSheet.selectMode')}>
         <ModeSelector />
         {state.mode === 'batch' && (
           <div className="mt-2">
@@ -34,15 +36,15 @@ export function ToolPage() {
         )}
       </BottomSheet>
 
-      <BottomSheet isOpen={activePanel === 'watermark'} onClose={closePanel} title="Watermark">
+      <BottomSheet isOpen={activePanel === 'watermark'} onClose={closePanel} title={t('bottomSheet.watermark')}>
         <WatermarkTypeCard />
       </BottomSheet>
 
-      <BottomSheet isOpen={activePanel === 'position'} onClose={closePanel} title="Position & Style">
+      <BottomSheet isOpen={activePanel === 'position'} onClose={closePanel} title={t('bottomSheet.positionStyle')}>
         <PositionStyleCard />
       </BottomSheet>
 
-      <BottomSheet isOpen={activePanel === 'export'} onClose={closePanel} title="Actions & Export">
+      <BottomSheet isOpen={activePanel === 'export'} onClose={closePanel} title={t('bottomSheet.actionsExport')}>
         <ActionButtons />
       </BottomSheet>
     </div>

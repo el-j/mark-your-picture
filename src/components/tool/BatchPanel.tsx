@@ -3,16 +3,19 @@ import { useWatermark } from '../../contexts/WatermarkContext';
 import { useToast } from '../../hooks/useToast';
 import { processBatch } from '../../lib/batch';
 import { ProgressBar } from './ProgressBar';
+import { useT } from '../../i18n/index';
 
 export function BatchPanel() {
   const { state, dispatch, getRenderOpts } = useWatermark();
   const { toast } = useToast();
+  const t = useT();
   const batchInputRef = useRef<HTMLInputElement>(null);
 
   const loadBatchFiles = useCallback((files: File[]) => {
     dispatch({ type: 'SET_BATCH_FILES', files });
-    toast(`${files.length} image${files.length > 1 ? 's' : ''} ready`);
-  }, [dispatch, toast]);
+    const msg = files.length === 1 ? t('batch.toastReady_one') : t('batch.toastReady_many', { count: files.length });
+    toast(msg);
+  }, [dispatch, toast, t]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -23,7 +26,7 @@ export function BatchPanel() {
   const handleBatch = useCallback(async () => {
     if (!state.batchFiles.length) return;
     if (state.activeTab === 'image' && !state.wmImg) {
-      toast('Please load a watermark image first');
+      toast(t('batch.toastNoWmImg'));
       return;
     }
     dispatch({ type: 'SET_IS_PROCESSING', value: true });
@@ -35,10 +38,10 @@ export function BatchPanel() {
       onProgress: (pct) => dispatch({ type: 'SET_BATCH_PROGRESS', value: pct }),
       onDone: () => {
         dispatch({ type: 'SET_IS_PROCESSING', value: false });
-        toast('ZIP downloaded ✓', 3500);
+        toast(t('batch.toastZipDone'), 3500);
       },
     });
-  }, [state.batchFiles, state.activeTab, state.wmImg, getRenderOpts, dispatch, toast]);
+  }, [state.batchFiles, state.activeTab, state.wmImg, getRenderOpts, dispatch, toast, t]);
 
   const statusCls: Record<string, string> = {
     pending: 'text-[var(--text-muted)]',
@@ -46,14 +49,23 @@ export function BatchPanel() {
     done: 'text-[var(--success)]',
     error: 'text-[var(--danger)]',
   };
-  const statusLabel: Record<string, string> = { pending: 'Waiting', processing: 'Processing…', done: 'Done ✓', error: 'Error ✗' };
+
+  const getStatusLabel = (status: string) => {
+    const map: Record<string, string> = {
+      pending: t('batch.statusWaiting'),
+      processing: t('batch.statusProcessing'),
+      done: t('batch.statusDone'),
+      error: t('batch.statusError'),
+    };
+    return map[status] ?? '';
+  };
 
   const btnBase = "inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-[var(--radius-sm)] text-[0.82rem] font-semibold cursor-pointer border-none transition-all w-full";
 
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <p className="text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5">Images</p>
+        <p className="text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5">{t('batch.imagesLabel')}</p>
         <div
           onClick={() => batchInputRef.current?.click()}
           onDragOver={(e) => e.preventDefault()}
@@ -63,8 +75,8 @@ export function BatchPanel() {
           <svg className="mx-auto mb-1 opacity-45" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" />
           </svg>
-          <p className="text-[0.85rem] text-[var(--text-muted)]">Drag &amp; drop or <strong className="text-[var(--accent)]">click to select</strong></p>
-          <p className="text-[0.72rem] mt-0.5 opacity-60 text-[var(--text-muted)]">Select multiple images</p>
+          <p className="text-[0.85rem] text-[var(--text-muted)]">{t('batch.dropzone')} <strong className="text-[var(--accent)]">{t('batch.dropzoneStrong')}</strong></p>
+          <p className="text-[0.72rem] mt-0.5 opacity-60 text-[var(--text-muted)]">{t('batch.dropzoneHint')}</p>
           <input ref={batchInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => {
             const files = Array.from(e.target.files ?? []);
             if (files.length) loadBatchFiles(files);
@@ -73,13 +85,13 @@ export function BatchPanel() {
 
         <div className="mt-2.5 max-h-[160px] overflow-y-auto border border-[var(--border-subtle)] rounded-[var(--radius-sm)] bg-[var(--bg)] text-[0.78rem]">
           {state.batchFiles.length === 0 ? (
-            <div className="py-2.5 text-center text-[var(--text-muted)] text-[0.78rem]">No images selected yet</div>
+            <div className="py-2.5 text-center text-[var(--text-muted)] text-[0.78rem]">{t('batch.noImages')}</div>
           ) : (
             state.batchFiles.map((file, i) => (
               <div key={i} className="flex justify-between items-center py-1.5 px-3 border-b border-[var(--border-subtle)] last:border-b-0">
                 <span className="overflow-hidden text-ellipsis whitespace-nowrap flex-1 mr-2">{file.name}</span>
                 <span className={`text-[0.7rem] font-bold shrink-0 ${statusCls[state.batchStatuses[i]] ?? ''}`}>
-                  {statusLabel[state.batchStatuses[i]] ?? ''}
+                  {getStatusLabel(state.batchStatuses[i])}
                 </span>
               </div>
             ))
@@ -88,15 +100,15 @@ export function BatchPanel() {
       </div>
 
       <div>
-        <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">Watermark Type</p>
-        <p className="text-[0.78rem] text-[var(--text-muted)]">Uses the same watermark settings configured above.</p>
+        <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">{t('batch.wmTypeLabel')}</p>
+        <p className="text-[0.78rem] text-[var(--text-muted)]">{t('batch.wmTypeHint')}</p>
       </div>
 
       <div className="flex flex-col gap-2">
         <button onClick={handleBatch} disabled={!state.batchFiles.length || state.isProcessing}
           className={`${btnBase} bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:bg-[var(--accent-hover)] hover:-translate-y-px active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`}>
           <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
-          Download ZIP
+          {t('batch.downloadZip')}
         </button>
         {state.isProcessing && <ProgressBar progress={state.batchProgress} />}
       </div>

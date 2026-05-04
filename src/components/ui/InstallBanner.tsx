@@ -1,5 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '../../hooks/useToast';
+import { useT } from '../../i18n/index';
+
+const BANNER_DELAY_MS = 3000;
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -11,58 +14,56 @@ export function InstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
   const { toast } = useToast();
+  const t = useT();
 
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       if (sessionStorage.getItem('pwa-dismissed') !== '1') {
-        setTimeout(() => setVisible(true), 3000);
+        setTimeout(() => setVisible(true), BANNER_DELAY_MS);
       }
     };
-    const installedHandler = () => {
-      setVisible(false);
-      setDeferredPrompt(null);
-      toast('App installed! Launch it from your home screen ✓', 4000);
-    };
     window.addEventListener('beforeinstallprompt', handler);
-    window.addEventListener('appinstalled', installedHandler);
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
-      window.removeEventListener('appinstalled', installedHandler);
-    };
-  }, [toast]);
-
-  const handleInstall = useCallback(async () => {
-    if (!deferredPrompt) return;
-    setVisible(false);
-    await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') toast('App installed ✓', 3000);
-    setDeferredPrompt(null);
-  }, [deferredPrompt, toast]);
-
-  const handleDismiss = useCallback(() => {
-    setVisible(false);
-    sessionStorage.setItem('pwa-dismissed', '1');
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    await deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    if (choice.outcome === 'accepted') {
+      toast(t('install.toastInstalled'));
+    }
+    setDeferredPrompt(null);
+    setVisible(false);
+  };
+
+  const handleDismiss = () => {
+    sessionStorage.setItem('pwa-dismissed', '1');
+    setVisible(false);
+  };
 
   if (!visible) return null;
 
   return (
-    <div
-      id="install-banner"
-      role="complementary"
-      aria-label="Install app"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--surface)] border border-[var(--accent)] rounded-[var(--radius)] p-3 px-4 shadow-[var(--shadow)] z-[99] flex items-center gap-2.5 max-w-[calc(100vw-2rem)] animate-[slideUp_0.3s_ease]"
-    >
-      <img className="shrink-0 rounded-[10px]" src="./icons/icon-72x72.png" width="40" height="40" alt="App icon" />
-      <div className="flex-1 min-w-0">
-        <strong className="block text-[0.85rem]">Install Mark Your Picture</strong>
-        <span className="text-[0.72rem] text-[var(--text-muted)]">Works offline · fast · no uploads</span>
+    <div className="fixed bottom-20 left-0 right-0 z-50 flex justify-center px-4 md:bottom-6">
+      <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius)] py-3 px-4 shadow-[var(--shadow-lg)] max-w-sm w-full">
+        <div className="flex-1 text-[0.82rem] text-[var(--text)]">
+          <strong className="block text-[var(--text)] mb-0.5">{t('install.title')}</strong>
+          {t('install.subtitle')}
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button onClick={handleInstall}
+            className="py-1.5 px-3 text-[0.78rem] font-semibold bg-[var(--accent)] text-white border-none rounded-[var(--radius-sm)] cursor-pointer hover:bg-[var(--accent-hover)]">
+            {t('install.install')}
+          </button>
+          <button onClick={handleDismiss}
+            className="py-1.5 px-2 text-[0.78rem] bg-transparent text-[var(--text-muted)] border border-[var(--border)] rounded-[var(--radius-sm)] cursor-pointer hover:text-[var(--text)]">
+            ✕
+          </button>
+        </div>
       </div>
-      <button onClick={handleInstall} className="bg-[var(--accent)] text-white border-none rounded-[var(--radius-sm)] px-3 py-1.5 text-[0.8rem] font-semibold cursor-pointer whitespace-nowrap shrink-0 hover:bg-[var(--accent-hover)]">Install</button>
-      <button onClick={handleDismiss} aria-label="Dismiss" className="bg-transparent border-none text-[var(--text-muted)] cursor-pointer text-base leading-none p-0.5 shrink-0 hover:text-[var(--text)]">✕</button>
     </div>
   );
 }

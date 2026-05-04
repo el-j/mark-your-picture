@@ -1,13 +1,15 @@
 import { useWatermark } from '../../contexts/WatermarkContext';
 import { TextWatermarkTab } from './TextWatermarkTab';
 import { ImageWatermarkTab } from './ImageWatermarkTab';
+import { useT } from '../../i18n/index';
 
 export function WatermarkTypeCard() {
   const { state, dispatch } = useWatermark();
+  const t = useT();
 
   return (
     <>
-      <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">Watermark Type</p>
+      <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">{t('watermark.typeLabel')}</p>
       <div className="flex gap-1.5 mb-4">
         {(['text', 'image'] as const).map((tab) => (
           <button
@@ -19,7 +21,7 @@ export function WatermarkTypeCard() {
                 : 'bg-[var(--bg)] border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
             }`}
           >
-            {tab === 'text' ? 'Text' : 'Image / Logo'}
+            {tab === 'text' ? t('watermark.text') : t('watermark.imageTab')}
           </button>
         ))}
       </div>

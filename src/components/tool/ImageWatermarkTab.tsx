@@ -2,21 +2,23 @@ import { useRef, useCallback } from 'react';
 import { useWatermark } from '../../contexts/WatermarkContext';
 import { useToast } from '../../hooks/useToast';
 import { loadImageFile } from '../../lib/watermark';
+import { useT } from '../../i18n/index';
 
 export function ImageWatermarkTab() {
   const { state, dispatch } = useWatermark();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const t = useT();
 
   const handleLoad = useCallback(async (file: File) => {
     try {
       const img = await loadImageFile(file);
       dispatch({ type: 'SET_WM_IMG', img });
-      toast('Watermark image loaded ✓');
+      toast(t('imageTab.toastLoaded'));
     } catch {
-      toast('Failed to load watermark image');
+      toast(t('imageTab.toastError'));
     }
-  }, [dispatch, toast]);
+  }, [dispatch, toast, t]);
 
   return (
     <div className="flex flex-col gap-0.5">
@@ -27,7 +29,7 @@ export function ImageWatermarkTab() {
         <svg className="mx-auto mb-1.5 opacity-50" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
         </svg>
-        <p>Click to select logo / image</p>
+        <p>{t('imageTab.clickToSelect')}</p>
         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) handleLoad(file);
@@ -37,7 +39,7 @@ export function ImageWatermarkTab() {
         )}
       </div>
 
-      <label htmlFor="wm-img-scale">Scale</label>
+      <label htmlFor="wm-img-scale">{t('imageTab.scale')}</label>
       <div className="flex items-center gap-2.5">
         <input type="range" id="wm-img-scale" min={5} max={100} value={state.wmImgScale}
           onChange={(e) => dispatch({ type: 'SET_WM_IMG_SCALE', value: Number(e.target.value) })}

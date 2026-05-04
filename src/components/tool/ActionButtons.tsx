@@ -2,6 +2,7 @@ import { useCallback, useRef, useState, useEffect } from 'react';
 import { useWatermark } from '../../contexts/WatermarkContext';
 import { useToast } from '../../hooks/useToast';
 import { renderWatermark } from '../../lib/watermark';
+import { useT } from '../../i18n/index';
 
 function resolveOutputMime(sourceMime?: string): string {
   const supported = ['image/jpeg', 'image/png', 'image/webp'];
@@ -17,6 +18,7 @@ function mimeToExt(mime: string): string {
 export function ActionButtons() {
   const { state, dispatch, getRenderOpts } = useWatermark();
   const { toast } = useToast();
+  const t = useT();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canShare, setCanShare] = useState(false);
 
@@ -67,8 +69,8 @@ export function ActionButtons() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast('Download started ✓');
-  }, [getBlob, toast]);
+    toast(t('actions.toastDownload'));
+  }, [getBlob, toast, t]);
 
   // Share via Web Share API
   const handleShare = useCallback(async () => {
@@ -77,13 +79,13 @@ export function ActionButtons() {
     const file = new File([result.blob], result.filename, { type: result.mime });
     try {
       await navigator.share({ files: [file], title: 'Watermarked Image' });
-      toast('Shared ✓');
+      toast(t('actions.toastShared'));
     } catch (err) {
       if ((err as Error).name !== 'AbortError') {
-        toast('Share failed');
+        toast(t('actions.toastShareFailed'));
       }
     }
-  }, [getBlob, toast]);
+  }, [getBlob, toast, t]);
 
   const handleReset = useCallback(() => {
     const canvas = getCanvas();
@@ -94,8 +96,8 @@ export function ActionButtons() {
     canvas.height = state.sourceImg.naturalHeight;
     ctx.drawImage(state.sourceImg, 0, 0);
     dispatch({ type: 'SET_HAS_APPLIED', value: false });
-    toast('Reset to original ✓');
-  }, [state.sourceImg, dispatch, getCanvas, toast]);
+    toast(t('actions.toastReset'));
+  }, [state.sourceImg, dispatch, getCanvas, toast, t]);
 
   const mime = resolveOutputMime(state.sourceFile?.type);
   const ext = mimeToExt(mime).toUpperCase();
@@ -108,7 +110,7 @@ export function ActionButtons() {
       <button id="btn-apply" onClick={handleApply} disabled={!state.sourceImg}
         className={`${btnBase} w-full bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:bg-[var(--accent-hover)] hover:-translate-y-px hover:shadow-[0_4px_16px_var(--accent-glow)] active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`}>
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
-        Apply Watermark
+        {t('actions.apply')}
       </button>
 
       {/* Download + Share row */}
@@ -122,7 +124,7 @@ export function ActionButtons() {
           <button id="btn-share" onClick={handleShare} disabled={!state.sourceImg}
             className={`${btnBase} flex-1 bg-[var(--surface2)] text-[var(--text)] border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)] active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none`}>
             <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>
-            Share
+            {t('actions.share')}
           </button>
         )}
       </div>
@@ -131,7 +133,7 @@ export function ActionButtons() {
       <button id="btn-reset" onClick={handleReset}
         className={`${btnBase} w-full bg-transparent border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)]`}>
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 .49-3.54" /></svg>
-        Reset
+        {t('actions.reset')}
       </button>
     </div>
   );
