@@ -1,6 +1,6 @@
 {
   "name": "mark-your-picture",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple client based tool to add a watermark into a picture. And download it again",
   "main": "index.js",
   "scripts": {

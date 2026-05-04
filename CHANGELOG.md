@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/el-j/mark-your-picture/compare/v1.0.0...v1.0.1) (2026-05-04)
+
+
+### Bug Fixes
+
+* add peer dependencies to package-lock.json for improved compatibility ([ba9b792](https://github.com/el-j/mark-your-picture/commit/ba9b792cbee1a9eacaf445e63452d50ebb0e6fb0))
+
 # 1.0.0 (2026-05-04)
 
 
