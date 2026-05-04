@@ -8,7 +8,8 @@ export type WatermarkPosition =
   | 'bottom-left'
   | 'bottom-right'
   | 'center'
-  | 'tile';
+  | 'tile'
+  | 'free';
 
 export interface TextWatermarkOptions {
   type: 'text';
@@ -33,4 +34,7 @@ export interface RenderOptions {
   opacity: number;
   rotation: number;
   margin: number;
+  /** Used only when position === 'free'. Values are fractions of canvas size (0–1). */
+  freeX?: number;
+  freeY?: number;
 }

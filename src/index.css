@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+/* ── Design tokens (CSS custom properties) ──────────────────────────────────── */
+:root {
+  --radius: 14px;
+  --radius-sm: 8px;
+  --transition: 0.18s ease;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0d14;
+  --surface: #13151f;
+  --surface2: #1c1f2e;
+  --surface3: #232741;
+  --border: #2a2f4a;
+  --border-subtle: #1e2238;
+  --accent: #6c63ff;
+  --accent-hover: #8880ff;
+  --accent-glow: rgba(108, 99, 255, 0.25);
+  --text: #e4e8f5;
+  --text-muted: #7880a0;
+  --danger: #ff4d6d;
+  --success: #3ddc84;
+  --warn: #f59e0b;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --checker-a: #181b28;
+  --checker-b: #13151f;
+}
+
+[data-theme="light"] {
+  --bg: #f0f3fb;
+  --surface: #ffffff;
+  --surface2: #f5f7fe;
+  --surface3: #eaedfa;
+  --border: #d0d5ee;
+  --border-subtle: #e8eaf6;
+  --accent: #5249e0;
+  --accent-hover: #6c63ff;
+  --accent-glow: rgba(82, 73, 224, 0.18);
+  --text: #1a1d2e;
+  --text-muted: #6b7280;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --warn: #d97706;
+  --shadow: 0 8px 32px rgba(82, 73, 224, 0.12);
+  --shadow-sm: 0 2px 8px rgba(82, 73, 224, 0.08);
+  --checker-a: #e8eaf8;
+  --checker-b: #f0f3fb;
+}
+
+/* ── Typography ───────────────────────────────────────────────────────────── */
+body {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ── Form inputs base styles ──────────────────────────────────────────────── */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* ── Labels base style ────────────────────────────────────────────────────── */
+label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+  margin-top: 0.75rem;
+}
+label:first-child {
+  margin-top: 0;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Custom range slider ──────────────────────────────────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+  margin-top: 0.3rem;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--accent);
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--accent-hover);
+  transform: scale(1.15);
+}
+
+/* ── Color input ──────────────────────────────────────────────────────────── */
+input[type="color"] {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: none;
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Select options (theme-aware) ─────────────────────────────────────────── */
+select option {
+  background: var(--surface);
+}
+
+/* ── Toast animation ──────────────────────────────────────────────────────── */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

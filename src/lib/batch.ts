@@ -12,6 +12,17 @@ export interface BatchCallbacks {
   onDone: () => void;
 }
 
+/** Maps a source MIME type to the best canvas-supported output type and extension. */
+function resolveOutputFormat(sourceMime: string): { mime: string; ext: string } {
+  const supported: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png':  'png',
+    'image/webp': 'webp',
+  };
+  if (supported[sourceMime]) return { mime: sourceMime, ext: supported[sourceMime] };
+  return { mime: 'image/png', ext: 'png' };
+}
+
 export async function processBatch(
   files: File[],
   opts: RenderOptions,
@@ -28,16 +39,19 @@ export async function processBatch(
       const img = await loadImageFile(file);
       renderWatermark(tempCanvas, img, opts);
 
+      const { mime, ext } = resolveOutputFormat(file.type);
+      const quality = mime === 'image/jpeg' ? 0.92 : undefined;
+
       const blob = await new Promise<Blob>((resolve, reject) => {
         tempCanvas.toBlob(
           (b) => (b ? resolve(b) : reject(new Error('toBlob failed'))),
-          'image/jpeg',
-          0.95,
+          mime,
+          quality,
         );
       });
 
       const baseName = file.name.replace(/\.[^/.]+$/, '');
-      zip.file(`${baseName}_watermarked.jpg`, blob);
+      zip.file(`${baseName}_watermarked.${ext}`, blob);
       callbacks.onFileComplete(i);
     } catch (err) {
       callbacks.onFileError(i, err);
