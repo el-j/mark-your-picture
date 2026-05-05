@@ -59,4 +59,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on reporting bugs, sugge
 
 ## License
 
-[MIT](./LICENSE) © 2024 el-j and contributors
+[MIT](./LICENSE) © 2026 el-j and contributors
