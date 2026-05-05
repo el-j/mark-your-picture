@@ -47,24 +47,24 @@ export function InstallBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-20 left-0 right-0 z-50 flex justify-center px-4 md:bottom-6">
-      <div className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius)] py-3 px-4 shadow-[var(--shadow-lg)] max-w-sm w-full">
+    <div className="fixed right-0 bottom-20 left-0 z-50 flex justify-center px-4 md:bottom-6">
+      <div className="flex w-full max-w-sm items-center gap-3 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 shadow-[var(--shadow-lg)]">
         <div className="flex-1 text-[0.82rem] text-[var(--text)]">
-          <strong className="block text-[var(--text)] mb-0.5">{t('install.title')}</strong>
+          <strong className="mb-0.5 block text-[var(--text)]">{t('install.title')}</strong>
           {t('install.subtitle')}
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex shrink-0 gap-2">
           <button
             type="button"
             onClick={handleInstall}
-            className="py-1.5 px-3 text-[0.78rem] font-semibold bg-[var(--accent)] text-white border-none rounded-[var(--radius-sm)] cursor-pointer hover:bg-[var(--accent-hover)]"
+            className="cursor-pointer rounded-[var(--radius-sm)] border-none bg-[var(--accent)] px-3 py-1.5 font-semibold text-[0.78rem] text-white hover:bg-[var(--accent-hover)]"
           >
             {t('install.install')}
           </button>
           <button
             type="button"
             onClick={handleDismiss}
-            className="py-1.5 px-2 text-[0.78rem] bg-transparent text-[var(--text-muted)] border border-[var(--border)] rounded-[var(--radius-sm)] cursor-pointer hover:text-[var(--text)]"
+            className="cursor-pointer rounded-[var(--radius-sm)] border border-[var(--border)] bg-transparent px-2 py-1.5 text-[0.78rem] text-[var(--text-muted)] hover:text-[var(--text)]"
           >
             ✕
           </button>

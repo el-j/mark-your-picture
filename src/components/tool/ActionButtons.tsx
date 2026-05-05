@@ -114,14 +114,14 @@ export function ActionButtons() {
     'inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-[var(--radius-sm)] text-[0.82rem] font-semibold cursor-pointer border-none transition-all tracking-tight';
 
   return (
-    <div className="flex flex-col gap-2.5 mt-1">
+    <div className="mt-1 flex flex-col gap-2.5">
       {/* Apply */}
       <button
         type="button"
         id="btn-apply"
         onClick={handleApply}
         disabled={!state.sourceImg}
-        className={`${btnBase} w-full bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:bg-[var(--accent-hover)] hover:-translate-y-px hover:shadow-[0_4px_16px_var(--accent-glow)] active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`}
+        className={`${btnBase} w-full bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:-translate-y-px hover:bg-[var(--accent-hover)] hover:shadow-[0_4px_16px_var(--accent-glow)] active:translate-y-0 disabled:transform-none disabled:cursor-not-allowed disabled:opacity-35 disabled:shadow-none`}
       >
         <svg
           aria-hidden="true"
@@ -144,7 +144,7 @@ export function ActionButtons() {
           id="btn-download"
           onClick={handleDownload}
           disabled={!state.sourceImg}
-          className={`${btnBase} flex-1 bg-[var(--success)] text-white shadow-[0_2px_8px_rgba(61,220,132,0.2)] hover:opacity-90 hover:-translate-y-px active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none`}
+          className={`${btnBase} flex-1 bg-[var(--success)] text-white shadow-[0_2px_8px_rgba(61,220,132,0.2)] hover:-translate-y-px hover:opacity-90 active:translate-y-0 disabled:transform-none disabled:cursor-not-allowed disabled:opacity-35`}
         >
           <svg
             aria-hidden="true"
@@ -167,7 +167,7 @@ export function ActionButtons() {
             id="btn-share"
             onClick={handleShare}
             disabled={!state.sourceImg}
-            className={`${btnBase} flex-1 bg-[var(--surface2)] text-[var(--text)] border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)] active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none`}
+            className={`${btnBase} flex-1 border border-[var(--border)] bg-[var(--surface2)] text-[var(--text)] hover:border-[var(--accent)] hover:bg-[var(--accent-glow)] hover:text-[var(--accent)] active:translate-y-0 disabled:transform-none disabled:cursor-not-allowed disabled:opacity-35`}
           >
             <svg
               aria-hidden="true"
@@ -194,7 +194,7 @@ export function ActionButtons() {
         type="button"
         id="btn-reset"
         onClick={handleReset}
-        className={`${btnBase} w-full bg-transparent border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)]`}
+        className={`${btnBase} w-full border border-[var(--border)] bg-transparent text-[var(--text-muted)] hover:border-[var(--accent)] hover:bg-[var(--accent-glow)] hover:text-[var(--accent)]`}
       >
         <svg
           aria-hidden="true"

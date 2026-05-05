@@ -30,7 +30,7 @@ export function TextWatermarkTab() {
         <option>Trebuchet MS</option>
       </select>
 
-      <div className="grid grid-cols-2 gap-3 mt-1">
+      <div className="mt-1 grid grid-cols-2 gap-3">
         <div>
           <label htmlFor="wm-size">{t('textTab.size')}</label>
           <input

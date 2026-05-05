@@ -7,7 +7,7 @@ export function CanvasArea() {
 
   return (
     <section
-      className="flex-1 flex flex-col items-center justify-center relative overflow-auto p-4 max-[899px]:pb-[calc(64px+1rem)]"
+      className="relative flex flex-1 flex-col items-center justify-center overflow-auto p-4 max-[899px]:pb-[calc(64px+1rem)]"
       style={{
         background: `repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 20px 20px`,
       }}
@@ -20,7 +20,7 @@ export function CanvasArea() {
           <button
             type="button"
             onClick={() => dispatch({ type: 'CLEAR_SOURCE' })}
-            className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-[var(--surface)]/90 backdrop-blur-md border border-[var(--border)] rounded-[var(--radius-sm)] shadow-[var(--shadow-sm)] text-[var(--text)] text-[0.75rem] font-semibold hover:bg-[var(--surface)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer z-10"
+            className="absolute top-4 right-4 z-10 flex cursor-pointer items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)]/90 px-3 py-1.5 font-semibold text-[0.75rem] text-[var(--text)] shadow-[var(--shadow-sm)] backdrop-blur-md transition-all hover:border-[var(--accent)] hover:bg-[var(--surface)] hover:text-[var(--accent)]"
           >
             <svg
               aria-hidden="true"

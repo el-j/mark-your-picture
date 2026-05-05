@@ -27,7 +27,7 @@ export function ImageWatermarkTab() {
     <div className="flex flex-col gap-0.5">
       <label
         htmlFor="wm-img-input"
-        className="block border-2 border-dashed border-[var(--border)] rounded-[var(--radius-sm)] py-4 px-3 text-center cursor-pointer bg-[var(--bg)] transition-all duration-150 text-[0.78rem] text-[var(--text-muted)] hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
+        className="block cursor-pointer rounded-[var(--radius-sm)] border-2 border-[var(--border)] border-dashed bg-[var(--bg)] px-3 py-4 text-center text-[0.78rem] text-[var(--text-muted)] transition-all duration-150 hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
       >
         <svg
           aria-hidden="true"
@@ -59,7 +59,7 @@ export function ImageWatermarkTab() {
           <img
             src={state.wmImg.src}
             alt="Watermark preview"
-            className="w-full max-h-[60px] object-contain mt-2 rounded-md"
+            className="mt-2 max-h-[60px] w-full rounded-md object-contain"
           />
         )}
       </label>
@@ -75,7 +75,7 @@ export function ImageWatermarkTab() {
           onChange={(e) => dispatch({ type: 'SET_WM_IMG_SCALE', value: Number(e.target.value) })}
           className="flex-1"
         />
-        <span className="min-w-[2.8rem] text-right text-[0.78rem] font-semibold text-[var(--text)] tabular-nums">
+        <span className="min-w-[2.8rem] text-right font-semibold text-[0.78rem] text-[var(--text)] tabular-nums">
           {state.wmImgScale}%
         </span>
       </div>

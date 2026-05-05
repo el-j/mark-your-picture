@@ -50,10 +50,10 @@ export function DropZone() {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className="flex flex-col items-center border-2 border-dashed border-[var(--border)] rounded-[var(--radius)] !p-4 text-center cursor-pointer transition-all duration-[var(--transition)] bg-transparent w-[calc(100%-2.5rem)] max-w-[420px] hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
+      className="!p-4 flex w-[calc(100%-2.5rem)] max-w-[420px] cursor-pointer flex-col items-center rounded-[var(--radius)] border-2 border-[var(--border)] border-dashed bg-transparent text-center transition-all duration-[var(--transition)] hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
     >
       <svg
-        className="opacity-45 mb-2.5 mx-auto"
+        className="mx-auto mb-2.5 opacity-45"
         role="img"
         aria-label="Upload image"
         width="40"
@@ -71,7 +71,7 @@ export function DropZone() {
         {t('dropzone.hint')}{' '}
         <strong className="text-[var(--accent)]">{t('dropzone.hintStrong')}</strong>
       </p>
-      <p className="text-[0.72rem] mt-1 opacity-60 text-[var(--text-muted)]">
+      <p className="mt-1 text-[0.72rem] text-[var(--text-muted)] opacity-60">
         {t('dropzone.formats')}
       </p>
       <input

@@ -7,14 +7,14 @@ export function Sidebar() {
   const { state } = useWatermark();
 
   return (
-    <aside className="hidden min-[900px]:flex bg-[var(--surface)] overflow-y-auto flex-col w-[320px] shrink-0 border-r border-[var(--border)] max-h-[calc(100vh-54px)] p-5 gap-5 order-[-1]">
-      <div className="bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-4">
+    <aside className="order-[-1] hidden max-h-[calc(100vh-54px)] w-[320px] shrink-0 flex-col gap-5 overflow-y-auto border-[var(--border)] border-r bg-[var(--surface)] p-5 min-[900px]:flex">
+      <div className="rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface2)] p-4">
         <ModeSelector />
       </div>
       {state.mode === 'single' ? (
         <SinglePanel />
       ) : (
-        <div className="bg-[var(--surface2)] border border-[var(--border-subtle)] rounded-[var(--radius)] p-4">
+        <div className="rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--surface2)] p-4">
           <BatchPanel />
         </div>
       )}

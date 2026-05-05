@@ -49,6 +49,9 @@
       },
       "performance": {
         "noBarrelFile": "off"
+      },
+      "nursery": {
+        "useSortedClasses": "warn"
       }
     }
   },
@@ -60,7 +63,16 @@
       "semicolons": "always",
       "arrowParentheses": "always"
     },
-    "globals": ["vi", "describe", "it", "expect", "beforeEach", "afterEach", "beforeAll", "afterAll"]
+    "globals": [
+      "vi",
+      "describe",
+      "it",
+      "expect",
+      "beforeEach",
+      "afterEach",
+      "beforeAll",
+      "afterAll"
+    ]
   },
   "assist": {
     "enabled": true,

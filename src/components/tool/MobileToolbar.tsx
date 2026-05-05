@@ -15,7 +15,7 @@ export function MobileToolbar({ activePanel, onOpenPanel }: MobileToolbarProps) 
     `${btnBase} ${activePanel === panel ? 'text-(--accent)' : 'text-(--text-muted) hover:bg-(--surface2) hover:text-(--text)'}`;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-16 bg-(--surface) border-t border-(--border) z-50 flex items-center px-1 min-[900px]:hidden pb-[env(safe-area-inset-bottom)]">
+    <div className="fixed right-0 bottom-0 left-0 z-50 flex h-16 items-center border-(--border) border-t bg-(--surface) px-1 pb-[env(safe-area-inset-bottom)] min-[900px]:hidden">
       {/* Mode Button */}
       <button type="button" className={getBtnCls('mode')} onClick={() => onOpenPanel('mode')}>
         <svg
@@ -33,7 +33,7 @@ export function MobileToolbar({ activePanel, onOpenPanel }: MobileToolbarProps) 
           <line x1="8" y1="21" x2="16" y2="21" />
           <line x1="12" y1="17" x2="12" y2="21" />
         </svg>
-        <span className="text-[0.65rem] font-medium">{t('toolbar.mode')}</span>
+        <span className="font-medium text-[0.65rem]">{t('toolbar.mode')}</span>
       </button>
 
       {/* Watermark Button */}
@@ -57,7 +57,7 @@ export function MobileToolbar({ activePanel, onOpenPanel }: MobileToolbarProps) 
           <line x1="9" y1="20" x2="15" y2="20" />
           <line x1="12" y1="4" x2="12" y2="20" />
         </svg>
-        <span className="text-[0.65rem] font-medium">{t('toolbar.watermark')}</span>
+        <span className="font-medium text-[0.65rem]">{t('toolbar.watermark')}</span>
       </button>
 
       {/* Position & Style Button */}
@@ -81,7 +81,7 @@ export function MobileToolbar({ activePanel, onOpenPanel }: MobileToolbarProps) 
           <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
           <line x1="12" y1="22.08" x2="12" y2="12" />
         </svg>
-        <span className="text-[0.65rem] font-medium">{t('toolbar.position')}</span>
+        <span className="font-medium text-[0.65rem]">{t('toolbar.position')}</span>
       </button>
 
       {/* Export/Actions Button */}
@@ -101,7 +101,7 @@ export function MobileToolbar({ activePanel, onOpenPanel }: MobileToolbarProps) 
           <polyline points="17 8 12 3 7 8" />
           <line x1="12" y1="3" x2="12" y2="15" />
         </svg>
-        <span className="text-[0.65rem] font-medium">{t('toolbar.export')}</span>
+        <span className="font-medium text-[0.65rem]">{t('toolbar.export')}</span>
       </button>
     </div>
   );
