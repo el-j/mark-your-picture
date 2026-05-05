@@ -76,14 +76,14 @@ export function BatchPanel() {
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <p className="text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5">
+        <p className="mb-1.5 font-bold text-[0.62rem] text-[var(--text-muted)] uppercase tracking-[0.1em]">
           {t('batch.imagesLabel')}
         </p>
         <label
           htmlFor="batch-file-input"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
-          className="block border-2 border-dashed border-[var(--border)] rounded-[var(--radius)] py-3 px-4 text-center cursor-pointer transition-all bg-transparent hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
+          className="block cursor-pointer rounded-[var(--radius)] border-2 border-[var(--border)] border-dashed bg-transparent px-4 py-3 text-center transition-all hover:border-[var(--accent)] hover:bg-[var(--accent-glow)]"
         >
           <svg
             aria-hidden="true"
@@ -104,7 +104,7 @@ export function BatchPanel() {
             {t('batch.dropzone')}{' '}
             <strong className="text-[var(--accent)]">{t('batch.dropzoneStrong')}</strong>
           </p>
-          <p className="text-[0.72rem] mt-0.5 opacity-60 text-[var(--text-muted)]">
+          <p className="mt-0.5 text-[0.72rem] text-[var(--text-muted)] opacity-60">
             {t('batch.dropzoneHint')}
           </p>
           <input
@@ -120,22 +120,22 @@ export function BatchPanel() {
           />
         </label>
 
-        <div className="mt-2.5 max-h-[160px] overflow-y-auto border border-[var(--border-subtle)] rounded-[var(--radius-sm)] bg-[var(--bg)] text-[0.78rem]">
+        <div className="mt-2.5 max-h-[160px] overflow-y-auto rounded-[var(--radius-sm)] border border-[var(--border-subtle)] bg-[var(--bg)] text-[0.78rem]">
           {state.batchFiles.length === 0 ? (
-            <div className="py-2.5 text-center text-[var(--text-muted)] text-[0.78rem]">
+            <div className="py-2.5 text-center text-[0.78rem] text-[var(--text-muted)]">
               {t('batch.noImages')}
             </div>
           ) : (
             state.batchFiles.map((file, i) => (
               <div
                 key={`${file.name}-${file.size}`}
-                className="flex justify-between items-center py-1.5 px-3 border-b border-[var(--border-subtle)] last:border-b-0"
+                className="flex items-center justify-between border-[var(--border-subtle)] border-b px-3 py-1.5 last:border-b-0"
               >
-                <span className="overflow-hidden text-ellipsis whitespace-nowrap flex-1 mr-2">
+                <span className="mr-2 flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
                   {file.name}
                 </span>
                 <span
-                  className={`text-[0.7rem] font-bold shrink-0 ${statusCls[state.batchStatuses[i]] ?? ''}`}
+                  className={`shrink-0 font-bold text-[0.7rem] ${statusCls[state.batchStatuses[i]] ?? ''}`}
                 >
                   {getStatusLabel(state.batchStatuses[i])}
                 </span>
@@ -146,7 +146,7 @@ export function BatchPanel() {
       </div>
 
       <div>
-        <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">
+        <p className="mb-3 font-bold text-[0.65rem] text-[var(--text-muted)] uppercase tracking-[0.1em]">
           {t('batch.wmTypeLabel')}
         </p>
         <p className="text-[0.78rem] text-[var(--text-muted)]">{t('batch.wmTypeHint')}</p>
@@ -157,7 +157,7 @@ export function BatchPanel() {
           type="button"
           onClick={handleBatch}
           disabled={!state.batchFiles.length || state.isProcessing}
-          className={`${btnBase} bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:bg-[var(--accent-hover)] hover:-translate-y-px active:translate-y-0 disabled:opacity-35 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none`}
+          className={`${btnBase} bg-[var(--accent)] text-white shadow-[0_2px_8px_var(--accent-glow)] hover:-translate-y-px hover:bg-[var(--accent-hover)] active:translate-y-0 disabled:transform-none disabled:cursor-not-allowed disabled:opacity-35 disabled:shadow-none`}
         >
           <svg
             aria-hidden="true"

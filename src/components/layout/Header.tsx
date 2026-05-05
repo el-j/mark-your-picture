@@ -12,12 +12,7 @@ function LangSwitcher() {
       value={lang}
       onChange={(e) => setLang(e.target.value as Lang)}
       aria-label={t('header.langSwitcher')}
-      className="w-auto shrink-0 px-2 py-1 text-[0.72rem] font-bold uppercase
-                 rounded-[var(--radius-sm)] border border-[var(--border)]
-                 bg-transparent text-[var(--text-muted)]
-                 cursor-pointer transition-all duration-[var(--transition)]
-                 hover:border-[var(--accent)] hover:text-[var(--accent)]
-                 focus:outline-none focus:border-[var(--accent)] focus:text-[var(--accent)]"
+      className="w-auto shrink-0 cursor-pointer rounded-[var(--radius-sm)] border border-[var(--border)] bg-transparent px-2 py-1 font-bold text-[0.72rem] text-[var(--text-muted)] uppercase transition-all duration-[var(--transition)] hover:border-[var(--accent)] hover:text-[var(--accent)] focus:border-[var(--accent)] focus:text-[var(--accent)] focus:outline-none"
     >
       <option value="en">EN</option>
       <option value="de">DE</option>
@@ -28,14 +23,10 @@ function LangSwitcher() {
 export function Header() {
   const t = useT();
   return (
-    <header
-      className="px-4 h-[54px] flex items-center gap-2.5
-                 bg-[var(--surface)] border-b border-[var(--border)]
-                 sticky top-0 z-20 backdrop-blur-[12px]"
-    >
+    <header className="sticky top-0 z-20 flex h-[54px] items-center gap-2.5 border-[var(--border)] border-b bg-[var(--surface)] px-4 backdrop-blur-[12px]">
       {/* Logo */}
       <svg
-        className="shrink-0 rounded-[10px] overflow-hidden"
+        className="shrink-0 overflow-hidden rounded-[10px]"
         role="img"
         aria-label="Mark Your Picture logo"
         width="28"
@@ -53,13 +44,8 @@ export function Header() {
       </svg>
 
       {/* Title */}
-      <div className="flex-1 min-w-0">
-        <h1
-          className="text-[1.05rem] font-bold tracking-tight whitespace-nowrap
-                     overflow-hidden text-ellipsis
-                     bg-gradient-to-br from-[var(--accent)] to-[#a78bfa]
-                     bg-clip-text text-transparent"
-        >
+      <div className="min-w-0 flex-1">
+        <h1 className="overflow-hidden text-ellipsis whitespace-nowrap bg-gradient-to-br from-[var(--accent)] to-[#a78bfa] bg-clip-text font-bold text-[1.05rem] text-transparent tracking-tight">
           Mark Your Picture
         </h1>
         <p className="text-[0.68rem] text-[var(--text-muted)]">{t('header.tagline')}</p>

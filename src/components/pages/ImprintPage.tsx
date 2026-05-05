@@ -8,38 +8,38 @@ export function ImprintPage() {
     'text-[0.62rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-1.5';
 
   return (
-    <main className="max-w-[680px] mx-auto py-8 px-5 flex flex-col gap-4 w-full">
-      <h2 className="text-2xl font-bold bg-gradient-to-br from-[var(--accent)] to-[#a78bfa] bg-clip-text text-transparent">
+    <main className="mx-auto flex w-full max-w-[680px] flex-col gap-4 px-5 py-8">
+      <h2 className="bg-gradient-to-br from-[var(--accent)] to-[#a78bfa] bg-clip-text font-bold text-2xl text-transparent">
         {t('imprint.title')}
       </h2>
 
       <div className={cardCls}>
         <p className={labelCls}>{t('imprint.responsible.label')}</p>
-        <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
+        <p className="text-[0.85rem] text-[var(--text-muted)] leading-relaxed">
           {t('imprint.responsible.body')} <strong className="text-[var(--text)]">el-j</strong>.
         </p>
-        <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)] mt-2.5">
+        <p className="mt-2.5 text-[0.85rem] text-[var(--text-muted)] leading-relaxed">
           {t('imprint.responsible.contact')}
         </p>
       </div>
 
       <div className={cardCls}>
         <p className={labelCls}>{t('imprint.liability.label')}</p>
-        <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
+        <p className="text-[0.85rem] text-[var(--text-muted)] leading-relaxed">
           {t('imprint.liability.body')}
         </p>
       </div>
 
       <div className={cardCls}>
         <p className={labelCls}>{t('imprint.source.label')}</p>
-        <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)] mb-2">
+        <p className="mb-2 text-[0.85rem] text-[var(--text-muted)] leading-relaxed">
           {t('imprint.source.body')}
         </p>
         <a
           href="https://github.com/el-j/mark-your-picture"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[var(--accent)] text-[0.85rem] break-all"
+          className="break-all text-[0.85rem] text-[var(--accent)]"
         >
           github.com/el-j/mark-your-picture
         </a>
@@ -47,7 +47,7 @@ export function ImprintPage() {
 
       <div className={cardCls}>
         <p className={labelCls}>{t('imprint.privacy.label')}</p>
-        <p className="text-[0.85rem] leading-relaxed text-[var(--text-muted)]">
+        <p className="text-[0.85rem] text-[var(--text-muted)] leading-relaxed">
           {t('imprint.privacy.body')}
         </p>
       </div>

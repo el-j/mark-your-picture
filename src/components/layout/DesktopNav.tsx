@@ -70,7 +70,7 @@ export function DesktopNav() {
   const t = useT();
   return (
     <nav
-      className="hidden min-[900px]:flex items-center gap-1 shrink-0"
+      className="hidden shrink-0 items-center gap-1 min-[900px]:flex"
       aria-label="Main navigation"
     >
       {navItems.map((item) => (
@@ -79,14 +79,11 @@ export function DesktopNav() {
           to={item.to}
           end={item.to === '/'}
           className={({ isActive }) =>
-            `flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)]
-             text-[0.78rem] font-medium no-underline whitespace-nowrap
-             border border-transparent transition-all duration-[var(--transition)]
-             ${
-               isActive
-                 ? 'bg-[var(--accent)] text-white border-[var(--accent)]'
-                 : 'text-[var(--text-muted)] hover:bg-[var(--surface2)] hover:text-[var(--text)] hover:border-[var(--border)]'
-             }`
+            `flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-transparent px-3 py-1.5 font-medium text-[0.78rem] no-underline transition-all duration-[var(--transition)] ${
+              isActive
+                ? 'border-[var(--accent)] bg-[var(--accent)] text-white'
+                : 'text-[var(--text-muted)] hover:border-[var(--border)] hover:bg-[var(--surface2)] hover:text-[var(--text)]'
+            }`
           }
         >
           {item.icon}

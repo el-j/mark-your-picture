@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
@@ -166,23 +166,41 @@ jobs:
           path: playwright-report/
           retention-days: 14
 
+      - name: Deploy Playwright report to GitHub Pages
+        if: failure()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./playwright-report
+          destination_dir: e2e-reports/pr-${{ github.event.number }}
+          keep_files: true
+
       - name: Post E2E result comment
         if: failure()
         uses: actions/github-script@v7
         with:
           script: |
+            const reportUrl = `https://el-j.github.io/mark-your-picture/e2e-reports/pr-${{ github.event.number }}/`;
             const body = [
               '## ❌ E2E Tests Failed',
               '',
-              'One or more end-to-end tests failed. If you intentionally changed the UI, update the visual snapshots:',
+              'One or more end-to-end tests failed. If you intentionally changed the UI:',
+              '',
+              `📸 **[View screenshot diffs in the Playwright report](${reportUrl})**`,
+              '',
+              'To auto-update the baseline screenshots, comment on this PR:',
+              '',
+              '```',
+              '/update-snapshots',
+              '```',
+              '',
+              'Or update locally:',
               '',
               '```bash',
               'npm run build && npm run e2e:update',
               'git add e2e/visual.spec.ts-snapshots',
               'git commit -m "test(e2e): update visual snapshots"',
               '```',
-              '',
-              `> Full Playwright report (including screenshot diffs) available as a [workflow artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).`,
             ].join('\n');
 
             const { data: comments } = await github.rest.issues.listComments({

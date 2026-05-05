@@ -19,7 +19,7 @@ export function PositionStyleCard() {
 
   return (
     <>
-      <p className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-[var(--text-muted)] mb-3">
+      <p className="mb-3 font-bold text-[0.65rem] text-[var(--text-muted)] uppercase tracking-[0.1em]">
         {t('position.label')}
       </p>
 
@@ -41,7 +41,7 @@ export function PositionStyleCard() {
       </select>
 
       {isFree && (
-        <div className="flex items-center gap-2.5 py-2.5 px-3.5 mt-3 rounded-[var(--radius-sm)] text-[0.76rem] text-[var(--warn)] bg-[color-mix(in_srgb,var(--warn)_12%,transparent)] border border-[color-mix(in_srgb,var(--warn)_40%,transparent)]">
+        <div className="mt-3 flex items-center gap-2.5 rounded-[var(--radius-sm)] border border-[color-mix(in_srgb,var(--warn)_40%,transparent)] bg-[color-mix(in_srgb,var(--warn)_12%,transparent)] px-3.5 py-2.5 text-[0.76rem] text-[var(--warn)]">
           <svg
             aria-hidden="true"
             width="14"
@@ -71,7 +71,7 @@ export function PositionStyleCard() {
           onChange={(e) => dispatch({ type: 'SET_OPACITY', value: Number(e.target.value) })}
           className="flex-1"
         />
-        <span className="min-w-[2.8rem] text-right text-[0.78rem] font-semibold text-[var(--text)] tabular-nums">
+        <span className="min-w-[2.8rem] text-right font-semibold text-[0.78rem] text-[var(--text)] tabular-nums">
           {state.opacity}%
         </span>
       </div>
@@ -87,7 +87,7 @@ export function PositionStyleCard() {
           onChange={(e) => dispatch({ type: 'SET_ROTATION', value: Number(e.target.value) })}
           className="flex-1"
         />
-        <span className="min-w-[2.8rem] text-right text-[0.78rem] font-semibold text-[var(--text)] tabular-nums">
+        <span className="min-w-[2.8rem] text-right font-semibold text-[0.78rem] text-[var(--text)] tabular-nums">
           {state.rotation}°
         </span>
       </div>

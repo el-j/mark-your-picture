@@ -11,11 +11,7 @@ export function ThemeToggle() {
       id="theme-toggle"
       onClick={toggleTheme}
       aria-label={theme === 'dark' ? t('theme.toLight') : t('theme.toDark')}
-      className="flex items-center justify-center w-[34px] h-[34px] shrink-0
-                 bg-transparent border border-[var(--border)] rounded-[var(--radius-sm)]
-                 text-[var(--text-muted)] cursor-pointer
-                 transition-all duration-[var(--transition)]
-                 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)]"
+      className="flex h-[34px] w-[34px] shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border)] bg-transparent text-[var(--text-muted)] transition-all duration-[var(--transition)] hover:border-[var(--accent)] hover:bg-[var(--accent-glow)] hover:text-[var(--accent)]"
     >
       {theme === 'dark' ? (
         <svg

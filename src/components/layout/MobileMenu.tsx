@@ -28,27 +28,20 @@ export function MobileMenu() {
       {/* Hamburger button */}
       <button
         type="button"
-        className={`flex min-[900px]:hidden flex-col justify-center items-center
-                    w-9 h-9 bg-transparent border border-(--border)
-                    cursor-pointer z-101 rounded-sm
-                    transition-all duration-(--transition) shrink-0 gap-1 p-0
-                    hover:bg-(--surface2) hover:border-(--accent)`}
+        className={`z-101 flex h-9 w-9 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-sm border border-(--border) bg-transparent p-0 transition-all duration-(--transition) hover:border-(--accent) hover:bg-(--surface2) min-[900px]:hidden`}
         aria-label="Toggle menu"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         onClick={toggle}
       >
         <span
-          className={`w-4 h-[1.5px] bg-(--text-muted) rounded-sm transition-transform duration-200
-                     ${isOpen ? 'translate-y-[5.5px] rotate-45' : ''}`}
+          className={`h-[1.5px] w-4 rounded-sm bg-(--text-muted) transition-transform duration-200 ${isOpen ? 'translate-y-[5.5px] rotate-45' : ''}`}
         />
         <span
-          className={`w-4 h-[1.5px] bg-(--text-muted) rounded-sm transition-opacity duration-200
-                     ${isOpen ? 'opacity-0' : ''}`}
+          className={`h-[1.5px] w-4 rounded-sm bg-(--text-muted) transition-opacity duration-200 ${isOpen ? 'opacity-0' : ''}`}
         />
         <span
-          className={`w-4 h-[1.5px] bg-(--text-muted) rounded-sm transition-transform duration-200
-                     ${isOpen ? 'translate-y-[-5.5px] -rotate-45' : ''}`}
+          className={`h-[1.5px] w-4 rounded-sm bg-(--text-muted) transition-transform duration-200 ${isOpen ? 'translate-y-[-5.5px] -rotate-45' : ''}`}
         />
       </button>
 
@@ -56,8 +49,7 @@ export function MobileMenu() {
       <button
         type="button"
         aria-label="Close menu"
-        className={`fixed inset-0 bg-black/50 z-98 transition-all duration-250 min-[900px]:hidden border-none p-0
-                    ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        className={`fixed inset-0 z-98 border-none bg-black/50 p-0 transition-all duration-250 min-[900px]:hidden ${isOpen ? 'visible opacity-100' : 'invisible opacity-0'}`}
         onClick={toggle}
         tabIndex={isOpen ? 0 : -1}
       />
@@ -65,13 +57,7 @@ export function MobileMenu() {
       {/* Drawer */}
       <nav
         id="mobile-menu"
-        className={`fixed top-0! right-0! bottom-0! w-65 max-w-[80%] min-[900px]:hidden
-                    bg-(--surface) border-l border-(--border)
-                    h-svh p-4 pt-17.5
-                    flex flex-col gap-1.5 z-99
-                    transition-transform duration-250 ease-in-out
-                    shadow-[-8px_0_32px_rgba(0,0,0,0.2)]
-                    ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0! right-0! bottom-0! z-99 flex h-svh w-65 max-w-[80%] flex-col gap-1.5 border-(--border) border-l bg-(--surface) p-4 pt-17.5 shadow-[-8px_0_32px_rgba(0,0,0,0.2)] transition-transform duration-250 ease-in-out min-[900px]:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         aria-label="Main navigation"
       >
         {navItems.map((item) => (
@@ -80,14 +66,11 @@ export function MobileMenu() {
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-2 px-3.5 py-2.5 w-full rounded-sm
-               text-[0.95rem] font-medium no-underline
-               border border-transparent transition-all duration-(--transition)
-               ${
-                 isActive
-                   ? 'bg-(--accent) text-white border-(--accent)'
-                   : 'text-(--text-muted) hover:bg-(--surface2) hover:text-(--text) hover:border-(--border)'
-               }`
+              `flex w-full items-center gap-2 rounded-sm border border-transparent px-3.5 py-2.5 font-medium text-[0.95rem] no-underline transition-all duration-(--transition) ${
+                isActive
+                  ? 'border-(--accent) bg-(--accent) text-white'
+                  : 'text-(--text-muted) hover:border-(--border) hover:bg-(--surface2) hover:text-(--text)'
+              }`
             }
           >
             {item.icon}
