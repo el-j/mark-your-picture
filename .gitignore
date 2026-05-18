@@ -7,3 +7,7 @@ coverage/
 # Playwright output (reports and test artifacts — snapshots are committed)
 playwright-report/
 test-results/
+
+# Agent system runtime artifacts
+.build/
+.claude/worktrees/

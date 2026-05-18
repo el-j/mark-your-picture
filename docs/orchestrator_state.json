@@ -1,0 +1,25 @@
+{
+  "orchestrator": {
+    "status": "idle",
+    "phase": null,
+    "base_branch": "main"
+  },
+  "features": {
+    "FEAT-001": {
+      "title": "Export size selection — As Is / Small / Custom with locked aspect ratio",
+      "status": "draft",
+      "deps": [],
+      "plan": "docs/backlog/features/FEAT-001_export-size-selection.md",
+      "branch": null,
+      "merged": false,
+      "skill": "canvas"
+    }
+  },
+  "bugfixes": {},
+  "refactors": {},
+  "tests": {},
+  "queue": [],
+  "active": [],
+  "history": [],
+  "errors": []
+}
