@@ -2,6 +2,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { AboutPage } from './components/pages/AboutPage';
 import { ImprintPage } from './components/pages/ImprintPage';
+import { ProjectsPage } from './components/pages/ProjectsPage';
 import { ToolPage } from './components/tool/ToolPage';
 import { InstallBanner } from './components/ui/InstallBanner';
 import { Toast } from './components/ui/Toast';
@@ -20,6 +21,7 @@ export default function App() {
               <Header />
               <Routes>
                 <Route path="/" element={<ToolPage />} />
+                <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/imprint" element={<ImprintPage />} />
               </Routes>

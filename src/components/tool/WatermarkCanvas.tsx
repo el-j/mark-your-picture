@@ -8,6 +8,7 @@ export function WatermarkCanvas() {
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isDraggingRef = useRef(false);
+  const activePointerIdRef = useRef<number | null>(null);
 
   // Re-render watermark whenever any setting changes
   // biome-ignore lint/correctness/useExhaustiveDependencies: all individual state fields are explicitly listed; getRenderOpts is derived from them
@@ -40,61 +41,50 @@ export function WatermarkCanvas() {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    return [
-      ((clientX - rect.left) * scaleX) / canvas.width,
-      ((clientY - rect.top) * scaleY) / canvas.height,
-    ];
+    const nextX = ((clientX - rect.left) * scaleX) / canvas.width;
+    const nextY = ((clientY - rect.top) * scaleY) / canvas.height;
+    return [Math.min(1, Math.max(0, nextX)), Math.min(1, Math.max(0, nextY))];
   }, []);
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (state.position !== 'free') return;
+  const handlePointerEnd = useCallback((pointerId?: number) => {
+    if (
+      pointerId != null &&
+      activePointerIdRef.current != null &&
+      activePointerIdRef.current !== pointerId
+    ) {
+      return;
+    }
+    isDraggingRef.current = false;
+    activePointerIdRef.current = null;
+  }, []);
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (state.position !== 'free' || !e.isPrimary) return;
       isDraggingRef.current = true;
+      activePointerIdRef.current = e.pointerId;
+      e.currentTarget.setPointerCapture(e.pointerId);
       const [x, y] = canvasCoords(e.clientX, e.clientY);
       dispatch({ type: 'SET_FREE_POS', x, y });
     },
     [state.position, canvasCoords, dispatch],
   );
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDraggingRef.current || state.position !== 'free') return;
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (
+        !isDraggingRef.current ||
+        state.position !== 'free' ||
+        activePointerIdRef.current == null ||
+        activePointerIdRef.current !== e.pointerId
+      ) {
+        return;
+      }
       const [x, y] = canvasCoords(e.clientX, e.clientY);
       dispatch({ type: 'SET_FREE_POS', x, y });
     },
     [state.position, canvasCoords, dispatch],
   );
-
-  const handleMouseUp = useCallback(() => {
-    isDraggingRef.current = false;
-  }, []);
-
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      if (state.position !== 'free') return;
-      e.preventDefault();
-      isDraggingRef.current = true;
-      const touch = e.touches[0];
-      const [x, y] = canvasCoords(touch.clientX, touch.clientY);
-      dispatch({ type: 'SET_FREE_POS', x, y });
-    },
-    [state.position, canvasCoords, dispatch],
-  );
-
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent) => {
-      if (!isDraggingRef.current || state.position !== 'free') return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const [x, y] = canvasCoords(touch.clientX, touch.clientY);
-      dispatch({ type: 'SET_FREE_POS', x, y });
-    },
-    [state.position, canvasCoords, dispatch],
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    isDraggingRef.current = false;
-  }, []);
 
   // Allow dropping a new image onto the canvas
   const handleDrop = useCallback(
@@ -120,14 +110,13 @@ export function WatermarkCanvas() {
     <canvas
       ref={canvasRef}
       id="canvas"
-      className={`max-h-full max-w-full rounded-(--radius) shadow-(--shadow) ${state.position === 'free' ? 'cursor-crosshair' : 'cursor-default'}`}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      className={`max-h-full max-w-full select-none rounded-(--radius) shadow-(--shadow) ${state.position === 'free' ? 'cursor-crosshair touch-none' : 'cursor-default'}`}
+      style={{ touchAction: state.position === 'free' ? 'none' : 'auto' }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={(e) => handlePointerEnd(e.pointerId)}
+      onPointerCancel={(e) => handlePointerEnd(e.pointerId)}
+      onPointerLeave={() => handlePointerEnd()}
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDrop}
     />

@@ -38,3 +38,42 @@ export interface RenderOptions {
   freeX?: number;
   freeY?: number;
 }
+
+export interface PersistedWatermarkState {
+  activeTab: 'text' | 'image';
+  text: string;
+  font: string;
+  size: number;
+  style: string;
+  color: string;
+  wmImageDataUrl?: string | null;
+  wmImgScale: number;
+  position: WatermarkPosition;
+  opacity: number;
+  rotation: number;
+  margin: number;
+  freeX: number;
+  freeY: number;
+  mode: 'single' | 'batch';
+  projectName: string;
+  currentProjectId: string | null;
+  currentProjectCreatedAt: string | null;
+}
+
+export interface SavedProjectSnapshot {
+  id: string;
+  name: string;
+  state: PersistedWatermarkState;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectExportFile {
+  version: 1;
+  project: SavedProjectSnapshot;
+}
+
+export interface StorageStats {
+  count: number;
+  newestUpdatedAt: string | null;
+}

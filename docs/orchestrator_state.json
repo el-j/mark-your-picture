@@ -13,6 +13,26 @@
       "branch": null,
       "merged": false,
       "skill": "canvas"
+    },
+    "FEAT-002": {
+      "title": "Project persistence and explorer",
+      "status": "done",
+      "deps": [],
+      "plan": "docs/backlog/features/FEAT-002_project-persistence-explorer.md",
+      "branch": null,
+      "merged": false,
+      "skill": null
+    },
+    "FEAT-003": {
+      "title": "Mobile touch reliability and iOS install fallback",
+      "status": "done",
+      "deps": [
+        "FEAT-002"
+      ],
+      "plan": "docs/backlog/features/FEAT-003_mobile-touch-and-ios-install.md",
+      "branch": null,
+      "merged": false,
+      "skill": "pwa"
     }
   },
   "bugfixes": {},

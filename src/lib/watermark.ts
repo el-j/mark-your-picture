@@ -67,6 +67,43 @@ export function renderWatermark(
   }
 
   ctx.restore();
+
+  if (position !== 'free') return;
+
+  let ww = 0;
+  let wh = 0;
+  if (watermark.type === 'text') {
+    if (!watermark.text) return;
+    ctx.save();
+    ctx.font = `${watermark.style} ${watermark.size}px ${watermark.font}`.trim();
+    ww = ctx.measureText(watermark.text).width;
+    wh = watermark.size;
+    ctx.restore();
+  } else {
+    ww = watermark.image.naturalWidth * (watermark.scale / 100);
+    wh = watermark.image.naturalHeight * (watermark.scale / 100);
+  }
+
+  const [px, py] = corner(position, canvas.width, canvas.height, ww, wh, margin, freeX, freeY);
+  const cx = px + ww / 2;
+  const cy = py + wh / 2;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rad);
+  ctx.lineWidth = Math.max(2, Math.round(Math.min(canvas.width, canvas.height) / 500));
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+  ctx.strokeRect(-ww / 2, -wh / 2, ww, wh);
+  ctx.setLineDash([]);
+  ctx.strokeStyle = 'rgba(12, 16, 30, 0.9)';
+  ctx.lineWidth = Math.max(1, ctx.lineWidth - 1);
+  ctx.strokeRect(-ww / 2, -wh / 2, ww, wh);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+  ctx.beginPath();
+  ctx.arc(0, 0, Math.max(2, Math.min(ww, wh) * 0.03), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }
 
 function drawTiled(

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWatermark } from '../../contexts/WatermarkContext';
 import { useToast } from '../../hooks/useToast';
 import { useT } from '../../i18n/index';
@@ -23,6 +24,7 @@ export function ActionButtons() {
   const { state, dispatch, getRenderOpts } = useWatermark();
   const { toast } = useToast();
   const t = useT();
+  const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canShare, setCanShare] = useState(false);
 
@@ -209,6 +211,15 @@ export function ActionButtons() {
           <path d="M3.51 15a9 9 0 1 0 .49-3.54" />
         </svg>
         {t('actions.reset')}
+      </button>
+
+      <button
+        type="button"
+        id="btn-projects"
+        onClick={() => navigate('/projects')}
+        className={`${btnBase} w-full border border-[var(--border)] bg-[var(--surface2)] text-[var(--text)] hover:border-[var(--accent)] hover:text-[var(--accent)]`}
+      >
+        {t('actions.projects')}
       </button>
     </div>
   );

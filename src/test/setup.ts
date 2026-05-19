@@ -35,7 +35,10 @@ const mockCtx: Partial<CanvasRenderingContext2D> & Record<string, unknown> = {
   moveTo: vi.fn(),
   lineTo: vi.fn(),
   stroke: vi.fn(),
+  strokeRect: vi.fn(),
   fill: vi.fn(),
+  arc: vi.fn(),
+  setLineDash: vi.fn(),
   set globalAlpha(v: number) {
     this._globalAlpha = v;
   },

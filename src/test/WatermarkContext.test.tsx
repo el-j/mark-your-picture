@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type React from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -29,6 +29,8 @@ function StateDisplay() {
       <span data-testid="size">{state.size}</span>
       <span data-testid="color">{state.color}</span>
       <span data-testid="hasApplied">{String(state.hasApplied)}</span>
+      <span data-testid="wmImageDataUrl">{state.wmImageDataUrl ?? ''}</span>
+      <span data-testid="hasWmImg">{String(Boolean(state.wmImg))}</span>
     </div>
   );
 }
@@ -270,6 +272,108 @@ describe('WatermarkProvider – getRenderOpts', () => {
     );
     await userEvent.click(screen.getByText('to-image'));
     expect(screen.getByTestId('type').textContent).toBe('image');
+  });
+});
+
+// ── Persistence ───────────────────────────────────────────────────────────────
+
+describe('WatermarkProvider – persistence', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('persists watermark image data URL in localStorage', async () => {
+    const wmDataUrl =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9sQm7p0AAAAASUVORK5CYII=';
+
+    render(
+      <Wrapper>
+        <StateDisplay />
+        <DispatchButton
+          action={{ type: 'SET_WM_IMG', img: new Image(), dataUrl: wmDataUrl }}
+          label="set-wm-image"
+        />
+      </Wrapper>,
+    );
+
+    await userEvent.click(screen.getByText('set-wm-image'));
+    expect(screen.getByTestId('wmImageDataUrl').textContent).toBe(wmDataUrl);
+
+    const raw = localStorage.getItem('mark-your-picture-state-v1');
+    expect(raw).toBeTruthy();
+    const parsed = JSON.parse(raw as string) as { wmImageDataUrl?: string };
+    expect(parsed.wmImageDataUrl).toBe(wmDataUrl);
+  });
+
+  it('hydrates persisted watermark image data URL and reconstructs wmImg', async () => {
+    const wmDataUrl =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9sQm7p0AAAAASUVORK5CYII=';
+
+    const OriginalImage = window.Image;
+    class MockImage {
+      public onload: null | (() => void) = null;
+      public naturalWidth = 1;
+      public naturalHeight = 1;
+
+      set src(_value: string) {
+        setTimeout(() => {
+          this.onload?.();
+        }, 0);
+      }
+
+      get src(): string {
+        return '';
+      }
+    }
+
+    Object.defineProperty(window, 'Image', {
+      configurable: true,
+      writable: true,
+      value: MockImage,
+    });
+
+    try {
+      localStorage.setItem(
+        'mark-your-picture-state-v1',
+        JSON.stringify({
+          activeTab: 'image',
+          text: '© My Watermark',
+          font: 'Arial',
+          size: 48,
+          style: '',
+          color: '#ffffff',
+          wmImageDataUrl: wmDataUrl,
+          wmImgScale: 25,
+          position: 'free',
+          opacity: 60,
+          rotation: -30,
+          margin: 20,
+          freeX: 0.5,
+          freeY: 0.5,
+          mode: 'single',
+          projectName: 'Hydrated Project',
+          currentProjectId: 'project-1',
+          currentProjectCreatedAt: '2026-05-19T00:00:00.000Z',
+        }),
+      );
+
+      render(
+        <Wrapper>
+          <StateDisplay />
+        </Wrapper>,
+      );
+
+      expect(screen.getByTestId('wmImageDataUrl').textContent).toBe(wmDataUrl);
+      await waitFor(() => {
+        expect(screen.getByTestId('hasWmImg').textContent).toBe('true');
+      });
+    } finally {
+      Object.defineProperty(window, 'Image', {
+        configurable: true,
+        writable: true,
+        value: OriginalImage,
+      });
+    }
   });
 });
 

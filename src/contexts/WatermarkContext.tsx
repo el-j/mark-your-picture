@@ -7,7 +7,13 @@ import {
   useEffect,
   useReducer,
 } from 'react';
-import type { RenderOptions, WatermarkPosition } from '../lib/types';
+import { createProjectId, saveProject } from '../lib/projectStorage';
+import type {
+  PersistedWatermarkState,
+  RenderOptions,
+  SavedProjectSnapshot,
+  WatermarkPosition,
+} from '../lib/types';
 
 // ── State ───────────────────────────────────────────────────────────────────
 
@@ -28,6 +34,7 @@ export interface WatermarkState {
 
   // Image settings
   wmImg: HTMLImageElement | null;
+  wmImageDataUrl: string | null;
   wmImgScale: number;
 
   // Position & style
@@ -51,6 +58,11 @@ export interface WatermarkState {
 
   // Download state
   hasApplied: boolean;
+
+  // Project metadata
+  projectName: string;
+  currentProjectId: string | null;
+  currentProjectCreatedAt: string | null;
 }
 
 const initialState: WatermarkState = {
@@ -63,6 +75,7 @@ const initialState: WatermarkState = {
   style: '',
   color: '#ffffff',
   wmImg: null,
+  wmImageDataUrl: null,
   wmImgScale: 25,
   position: 'free',
   opacity: 60,
@@ -76,6 +89,9 @@ const initialState: WatermarkState = {
   batchProgress: 0,
   isProcessing: false,
   hasApplied: false,
+  projectName: 'Untitled Project',
+  currentProjectId: null,
+  currentProjectCreatedAt: null,
 };
 
 // ── Actions ──────────────────────────────────────────────────────────────────
@@ -88,7 +104,7 @@ export type WatermarkAction =
   | { type: 'SET_SIZE'; value: number }
   | { type: 'SET_STYLE'; value: string }
   | { type: 'SET_COLOR'; value: string }
-  | { type: 'SET_WM_IMG'; img: HTMLImageElement }
+  | { type: 'SET_WM_IMG'; img: HTMLImageElement; dataUrl?: string | null }
   | { type: 'SET_WM_IMG_SCALE'; value: number }
   | { type: 'SET_POSITION'; value: WatermarkPosition }
   | { type: 'SET_OPACITY'; value: number }
@@ -101,6 +117,9 @@ export type WatermarkAction =
   | { type: 'SET_BATCH_PROGRESS'; value: number }
   | { type: 'SET_IS_PROCESSING'; value: boolean }
   | { type: 'SET_HAS_APPLIED'; value: boolean }
+  | { type: 'SET_PROJECT_NAME'; value: string }
+  | { type: 'SET_PROJECT_META'; id: string | null; createdAt: string | null; name?: string }
+  | { type: 'LOAD_PERSISTED_STATE'; value: PersistedWatermarkState }
   | { type: 'CLEAR_SOURCE' }
   | { type: 'RESET' };
 
@@ -130,7 +149,11 @@ function reducer(state: WatermarkState, action: WatermarkAction): WatermarkState
     case 'SET_COLOR':
       return { ...state, color: action.value };
     case 'SET_WM_IMG':
-      return { ...state, wmImg: action.img };
+      return {
+        ...state,
+        wmImg: action.img,
+        wmImageDataUrl: action.dataUrl ?? action.img.src ?? null,
+      };
     case 'SET_WM_IMG_SCALE':
       return { ...state, wmImgScale: action.value };
     case 'SET_POSITION':
@@ -163,6 +186,28 @@ function reducer(state: WatermarkState, action: WatermarkAction): WatermarkState
       return { ...state, isProcessing: action.value };
     case 'SET_HAS_APPLIED':
       return { ...state, hasApplied: action.value };
+    case 'SET_PROJECT_NAME':
+      return { ...state, projectName: action.value };
+    case 'SET_PROJECT_META':
+      return {
+        ...state,
+        currentProjectId: action.id,
+        currentProjectCreatedAt: action.createdAt,
+        projectName: action.name ?? state.projectName,
+      };
+    case 'LOAD_PERSISTED_STATE':
+      return {
+        ...state,
+        ...action.value,
+        sourceImg: null,
+        sourceFile: null,
+        wmImg: null,
+        batchFiles: [],
+        batchStatuses: [],
+        batchProgress: 0,
+        isProcessing: false,
+        hasApplied: false,
+      };
     case 'RESET':
       return { ...initialState };
     default:
@@ -176,15 +221,44 @@ interface WatermarkContextValue {
   state: WatermarkState;
   dispatch: Dispatch<WatermarkAction>;
   getRenderOpts: () => RenderOptions;
+  setProjectName: (name: string) => void;
+  saveCurrentProject: (nameOverride?: string) => Promise<SavedProjectSnapshot>;
+  loadSavedProject: (project: SavedProjectSnapshot) => void;
+  resetProjectDraft: () => void;
 }
 
 const PERSIST_KEY = 'mark-your-picture-state-v1';
+
+const toPersistedState = (state: WatermarkState): PersistedWatermarkState => {
+  return {
+    activeTab: state.activeTab,
+    text: state.text,
+    font: state.font,
+    size: state.size,
+    style: state.style,
+    color: state.color,
+    wmImgScale: state.wmImgScale,
+    wmImageDataUrl: state.wmImageDataUrl,
+    position: state.position,
+    opacity: state.opacity,
+    rotation: state.rotation,
+    margin: state.margin,
+    freeX: state.freeX,
+    freeY: state.freeY,
+    mode: state.mode,
+    projectName: state.projectName,
+    currentProjectId: state.currentProjectId,
+    currentProjectCreatedAt: state.currentProjectCreatedAt,
+  };
+};
 
 function loadPersistedState(): Partial<WatermarkState> {
   try {
     const data = localStorage.getItem(PERSIST_KEY);
     if (!data) return {};
-    return JSON.parse(data);
+    const parsed = JSON.parse(data) as Partial<PersistedWatermarkState>;
+    if (!parsed || typeof parsed !== 'object') return {};
+    return parsed;
   } catch {
     return {};
   }
@@ -195,45 +269,59 @@ const WatermarkContext = createContext<WatermarkContextValue | null>(null);
 export function WatermarkProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { ...initialState, ...loadPersistedState() });
 
-  useEffect(() => {
-    // Save serializable state settings to localStorage
-    const {
-      activeTab,
-      text,
-      font,
-      size,
-      style,
-      color,
-      wmImgScale,
-      position,
-      opacity,
-      rotation,
-      margin,
-      freeX,
-      freeY,
-      mode,
-    } = state;
+  const setProjectName = useCallback((name: string) => {
+    dispatch({ type: 'SET_PROJECT_NAME', value: name });
+  }, []);
 
-    localStorage.setItem(
-      PERSIST_KEY,
-      JSON.stringify({
-        activeTab,
-        text,
-        font,
-        size,
-        style,
-        color,
-        wmImgScale,
-        position,
-        opacity,
-        rotation,
-        margin,
-        freeX,
-        freeY,
-        mode,
-      }),
-    );
+  const loadSavedProject = useCallback((project: SavedProjectSnapshot) => {
+    dispatch({ type: 'LOAD_PERSISTED_STATE', value: project.state });
+  }, []);
+
+  const saveCurrentProject = useCallback(
+    async (nameOverride?: string): Promise<SavedProjectSnapshot> => {
+      const now = new Date().toISOString();
+      const name = nameOverride?.trim() || state.projectName.trim() || 'Untitled Project';
+      const id = state.currentProjectId ?? createProjectId();
+      const createdAt = state.currentProjectCreatedAt ?? now;
+      const nextState: PersistedWatermarkState = {
+        ...toPersistedState(state),
+        projectName: name,
+        currentProjectId: id,
+        currentProjectCreatedAt: createdAt,
+      };
+
+      const project: SavedProjectSnapshot = {
+        id,
+        name,
+        state: nextState,
+        createdAt,
+        updatedAt: now,
+      };
+
+      await saveProject(project);
+      dispatch({ type: 'SET_PROJECT_META', id, createdAt, name });
+      return project;
+    },
+    [state],
+  );
+
+  const resetProjectDraft = useCallback(() => {
+    dispatch({ type: 'RESET' });
+  }, []);
+
+  useEffect(() => {
+    // Save serializable settings to localStorage as the active draft.
+    localStorage.setItem(PERSIST_KEY, JSON.stringify(toPersistedState(state)));
   }, [state]);
+
+  useEffect(() => {
+    if (!state.wmImageDataUrl || state.wmImg) return;
+    const img = new Image();
+    img.onload = () => {
+      dispatch({ type: 'SET_WM_IMG', img, dataUrl: state.wmImageDataUrl });
+    };
+    img.src = state.wmImageDataUrl;
+  }, [state.wmImageDataUrl, state.wmImg]);
 
   const getRenderOpts = useCallback((): RenderOptions => {
     const base = {
@@ -270,7 +358,17 @@ export function WatermarkProvider({ children }: { children: ReactNode }) {
   }, [state]);
 
   return (
-    <WatermarkContext.Provider value={{ state, dispatch, getRenderOpts }}>
+    <WatermarkContext.Provider
+      value={{
+        state,
+        dispatch,
+        getRenderOpts,
+        setProjectName,
+        saveCurrentProject,
+        loadSavedProject,
+        resetProjectDraft,
+      }}
+    >
       {children}
     </WatermarkContext.Provider>
   );

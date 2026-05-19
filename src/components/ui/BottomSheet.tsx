@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -9,20 +9,64 @@ interface BottomSheetProps {
 
 export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetProps) {
   const [shouldRender, setShouldRender] = useState(isOpen);
+  const [dragY, setDragY] = useState(0);
+  const dragStartYRef = useRef<number | null>(null);
+  const draggingRef = useRef(false);
+  const scrollYRef = useRef(0);
 
   useEffect(() => {
     if (isOpen) {
       setShouldRender(true);
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      scrollYRef.current = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollYRef.current}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
     } else {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
       document.body.style.overflow = '';
+      window.scrollTo(0, scrollYRef.current);
+      setDragY(0);
       const timer = setTimeout(() => setShouldRender(false), 300); // Wait for transition
       return () => clearTimeout(timer);
     }
     return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+
+  const handleDragStart = (e: React.PointerEvent<HTMLButtonElement>) => {
+    dragStartYRef.current = e.clientY;
+    draggingRef.current = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleDragMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!draggingRef.current || dragStartYRef.current == null) return;
+    const delta = Math.max(0, e.clientY - dragStartYRef.current);
+    setDragY(delta);
+  };
+
+  const handleDragEnd = () => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    dragStartYRef.current = null;
+    if (dragY > 90) {
+      onClose();
+    }
+    setDragY(0);
+  };
 
   if (!shouldRender) return null;
 
@@ -38,7 +82,11 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
 
       {/* Sheet */}
       <div
-        className={`fixed right-0 bottom-0 left-0 z-[101] flex max-h-[85vh] flex-col rounded-t-[20px] bg-[var(--surface)] shadow-[0_-8px_32px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] min-[900px]:hidden ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
+        className={`fixed right-0 bottom-0 left-0 z-[101] flex max-h-[85vh] flex-col rounded-t-[20px] bg-[var(--surface)] shadow-[0_-8px_32px_rgba(0,0,0,0.3)] min-[900px]:hidden ${draggingRef.current ? '' : 'transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'}`}
+        style={{
+          transform: isOpen ? `translateY(${dragY}px)` : 'translateY(100%)',
+          touchAction: 'pan-y',
+        }}
       >
         {/* Handle */}
         <button
@@ -46,6 +94,10 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
           aria-label="Close"
           className="flex w-full cursor-pointer justify-center border-none bg-transparent pt-3 pb-2"
           onClick={onClose}
+          onPointerDown={handleDragStart}
+          onPointerMove={handleDragMove}
+          onPointerUp={handleDragEnd}
+          onPointerCancel={handleDragEnd}
         >
           <div className="h-1.5 w-10 rounded-full bg-[var(--border)]" />
         </button>
@@ -76,7 +128,9 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-4 overflow-y-auto overscroll-contain p-5">{children}</div>
+        <div className="flex flex-col gap-4 overflow-y-auto overscroll-contain p-5 [webkit-overflow-scrolling:touch]">
+          {children}
+        </div>
       </div>
     </>
   );
